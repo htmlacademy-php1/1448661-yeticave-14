@@ -143,4 +143,12 @@ function include_template($name, array $data = []) {
     return $result;
 }
 
-
+//Возвращает отформатированную цену со знаком рубля.
+ function  price_formatting(int $price): string
+{
+    $price = ceil($price);
+    if ($price > 1000) {
+        $price =  number_format($price, 0, null, ' ');
+    }
+    return $price . ' &#8381';
+}
