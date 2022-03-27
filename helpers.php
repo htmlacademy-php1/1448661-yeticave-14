@@ -152,3 +152,28 @@ function include_template($name, array $data = []) {
     }
     return $price . ' &#8381';
 }
+
+//Функция возвращает массив, где первый элемент — целое количество часов до даты, а второй — остаток в минутах.
+function get_dt_range(string $end_date): array
+{
+    $array_time = [];
+    $end_date = date_create($end_date);
+    $current_date = date_create("now");
+    if ($end_date < $current_date){
+        array_push($array_time, '0', '00');
+        return $array_time;
+    }
+    $diff = date_diff($current_date, $end_date );
+    $days = $diff->days;
+    $hours = $diff->h;
+    $minutes = $diff->i;
+    
+    if ($days > 0) {
+        $hours =  $days * 24 + $hours;
+        array_push($array_time, $hours, $minutes);
+        return $array_time;
+    }
+
+    array_push($array_time, $hours, $minutes);
+    return $array_time;
+}
