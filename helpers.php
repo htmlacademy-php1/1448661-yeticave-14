@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
  *
@@ -13,7 +14,8 @@
  *
  * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
  */
-function is_date_valid(string $date) : bool {
+function is_date_valid(string $date): bool
+{
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
 
@@ -29,7 +31,8 @@ function is_date_valid(string $date) : bool {
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = []) {
+function db_get_prepare_stmt($link, $sql, $data = [])
+{
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
@@ -46,11 +49,9 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 
             if (is_int($value)) {
                 $type = 'i';
-            }
-            else if (is_string($value)) {
+            } else if (is_string($value)) {
                 $type = 's';
-            }
-            else if (is_double($value)) {
+            } else if (is_double($value)) {
                 $type = 'd';
             }
 
@@ -96,7 +97,7 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
  *
  * @return string Рассчитанная форма множественнго числа
  */
-function get_noun_plural_form (int $number, string $one, string $two, string $many): string
+function get_noun_plural_form(int $number, string $one, string $two, string $many): string
 {
     $number = (int) $number;
     $mod10 = $number % 10;
@@ -126,7 +127,8 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template($name, array $data = []) {
+function include_template($name, array $data = [])
+{
     $name = 'templates/' . $name;
     $result = '';
 
@@ -143,12 +145,46 @@ function include_template($name, array $data = []) {
     return $result;
 }
 
-//Возвращает отформатированную цену со знаком рубля.
- function  price_formatting(int $price): string
+
+/**
+ * Возвращает отформатированную цену со знаком рубля.
+ * @param integer $price Входящая цена.
+ * @return string Отформатированная цена с пробелом после первых двух знаков со знаком рубля.
+ */
+function  price_formatting(int $price): string
 {
     $price = ceil($price);
     if ($price > 1000) {
         $price =  number_format($price, 0, null, ' ');
     }
     return $price . ' &#8381';
+}
+
+
+/**
+ * Функция возвращает массив, где первый элемент — целое количество часов до даты, а второй — остаток в минутах.
+ * @param string $end_date Дата завершения лота.
+ * @param [type] $current_date Текущая дата.
+ * @return array Массив часы и минуты до завершения лота.
+ */
+function get_dt_range(string $end_date, $current_date): array
+{
+    $end_date = date_create($end_date);
+    $current_date = date_create('now');
+
+    if ($end_date <= $current_date) {
+        return ['00', '00'];
+    }
+    $diff = date_diff($current_date, $end_date);
+
+    $days = $diff->days;
+    $hours = $diff->h;
+    $minutes = $diff->i;
+
+    if ($days > 0) {
+        $hours =  $days * 24 + $hours;
+        return [$hours, $minutes];
+    }
+
+    return [$hours, $minutes];
 }
