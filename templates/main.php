@@ -29,7 +29,7 @@
                                     </div>
                                     <?php $time = get_dt_range($lot['end_date'],'now') ?>
                                     <div class="lot__timer timer <?php if ($time[0] < 1): ?>timer--finishing<?php endif; ?> ">
-                                    <?= $time[0] . ':' . $time[1];?>
+                                    <?= sprintf("%02d", $time[0]). ':' . sprintf("%02d", $time[1]);?>
                                     </div>
                                 </div>
                             </div>
