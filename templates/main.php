@@ -25,9 +25,9 @@
                                 <div class="lot__state">
                                     <div class="lot__rate">
                                         <span class="lot__amount">Стартовая цена</span>
-                                        <span class="lot__cost"><?= price_formatting(htmlspecialchars($lot['price'])); ?></span>
+                                        <span class="lot__cost"><?= priceFormatting(htmlspecialchars($lot['price'])); ?></span>
                                     </div>
-                                    <?php $time = get_dt_range($lot['end_date'],'now') ?>
+                                    <?php $time = getDtRange($lot['end_date'],'now') ?>
                                     <div class="lot__timer timer <?php if ($time[0] < 1): ?>timer--finishing<?php endif; ?> ">
                                     <?= sprintf("%02d", $time[0]). ':' . sprintf("%02d", $time[1]);?>
                                     </div>

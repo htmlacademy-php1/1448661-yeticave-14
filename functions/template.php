@@ -5,7 +5,7 @@
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template(string $name, array $data = []): string
+function includeTemplate(string $name, array $data = []): string
 {
     $name = 'templates/' . $name;
     $result = '';
@@ -45,7 +45,7 @@ function include_template(string $name, array $data = []): string
  *
  * @return string Рассчитанная форма множественнго числа
  */
-function get_noun_plural_form(int $number, string $one, string $two, string $many): string
+function getNounPluralForm(int $number, string $one, string $two, string $many): string
 {
     $number = (int) $number;
     $mod10 = $number % 10;
@@ -77,7 +77,7 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
  * @param integer $price Входящая цена.
  * @return string Отформатированная цена с пробелом после первых двух знаков со знаком рубля.
  */
-function  price_formatting(int $price): string
+function  priceFormatting(int $price): string
 {
     $price = ceil($price);
     if ($price > 1000) {
@@ -89,19 +89,19 @@ function  price_formatting(int $price): string
 
 /**
  * Функция возвращает массив, где первый элемент — целое количество часов до даты, а второй — остаток в минутах.
- * @param string $end_date Дата завершения лота.
- * @param string $current_date Текущая дата.
+ * @param string $endDate Дата завершения лота.
+ * @param string $currentDate Текущая дата.
  * @return array Массив часы и минуты до завершения лота.
  */
-function get_dt_range(string $end_date, string $current_date): array
+function getDtRange(string $endDate, string $currentDate): array
 {
-    $end_date = date_create($end_date);
-    $current_date = date_create($current_date);
+    $endDate = date_create($endDate);
+    $currentDate = date_create($currentDate);
 
-    if ($end_date <= $current_date) {
+    if ($endDate <= $currentDate) {
         return [0, 0];
     }
-    $diff = date_diff($current_date, $end_date);
+    $diff = date_diff($currentDate, $endDate);
 
     $days = $diff->days;
     $hours = $diff->h;
