@@ -4,36 +4,36 @@
 --
 CREATE DATABASE yeti
 DEFAULT CHARACTER SET utf8mb4
-DEFAULT COLLATE utf8mb4_unicode_ci
+DEFAULT COLLATE utf8mb4_unicode_ci;
 -- --------------------------------------------------------
 --
 -- Структура таблицы `categories`
 --
   CREATE TABLE `yeti`.
-  `categories` 
-  ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
+  `categories`
+  ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(255) NOT NULL ,
   `character_code` CHAR(255) NOT NULL ,
    PRIMARY KEY (`id`),
    UNIQUE (`character_code`)) ENGINE = InnoDB;
- 
+
 
 -- --------------------------------------------------------
 --
 -- Структура таблицы `lots`
 --
 CREATE TABLE `yeti`. `lots`
- ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
- `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+ ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+ `date_creation` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
  `title` VARCHAR(255) NOT NULL ,
  `description` TEXT NOT NULL ,
  `image` varchar(50) NOT NULL , `price` INT UNSIGNED NOT NULL ,
  `end_date` DATETIME NOT NULL ,
  `step_bet` INT UNSIGNED NOT NULL ,
- `user_id` INT UNSIGNED NOT NULL , 
- `category_id` INT UNSIGNED NOT NULL , 
- `winner_id` INT UNSIGNED NOT NULL ,
-  PRIMARY KEY (`id`), INDEX (`user_id`), INDEX (`category_id`), INDEX (`winner_id`)) ENGINE = InnoDB;
+ `author_id` INT UNSIGNED NOT NULL ,
+ `category_id` INT UNSIGNED NOT NULL ,
+ `winner_id` INT UNSIGNED NULL ,
+  PRIMARY KEY (`id`), INDEX (`author_id`), INDEX (`category_id`), INDEX (`winner_id`)) ENGINE = InnoDB;
 
 
 -- --------------------------------------------------------
@@ -42,10 +42,10 @@ CREATE TABLE `yeti`. `lots`
 --
 CREATE TABLE `yeti`.`bets`
  ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `date_creation` DATETIME NOT NULL ,
+  `date_creation` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
   `price` INT UNSIGNED NOT NULL ,
   `user_id` INT UNSIGNED NOT NULL ,
-  `lot_id` INT UNSIGNED NOT NULL , 
+  `lot_id` INT UNSIGNED NOT NULL ,
    PRIMARY KEY (`id`), INDEX (`user_id`),
    INDEX (`lot_id`)) ENGINE = InnoDB;
 
@@ -54,12 +54,12 @@ CREATE TABLE `yeti`.`bets`
 -- Структура таблицы `users`
 --
 CREATE TABLE `yeti`. `users`
- ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
- `date_registration` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+ ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+ `date_registration` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
  `email` VARCHAR(128) NOT NULL ,
- `name` VARCHAR(50) NOT NULL , 
- `password` CHAR(64) NOT NULL , 
- `contacts` VARCHAR(255) NOT NULL , 
+ `name` VARCHAR(50) NOT NULL ,
+ `password` CHAR(64) NOT NULL ,
+ `contacts` VARCHAR(255) NOT NULL ,
  PRIMARY KEY (`id`), UNIQUE (`email`)) ENGINE = InnoDB;
 
 -- --------------------------------------------------------
@@ -72,9 +72,8 @@ ALTER TABLE `bets`
 --
 ALTER TABLE `lots`
   ADD CONSTRAINT `lots_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `lots_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `lots_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `lots_ibfk_3` FOREIGN KEY (`winner_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
-COMMIT;
 -- --------------------------------------------------------
 --
 
@@ -144,9 +143,9 @@ CREATE TABLE `lots` (
   `price` int UNSIGNED NOT NULL,
   `end_date` datetime NOT NULL,
   `step_bet` int UNSIGNED NOT NULL,
-  `user_id` int UNSIGNED NOT NULL,
+  `author_id` int UNSIGNED NOT NULL,
   `category_id` int UNSIGNED NOT NULL,
-  `winner_id` int UNSIGNED NOT NULL
+  `winner_id` int UNSIGNED NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -188,7 +187,7 @@ ALTER TABLE `categories`
 --
 ALTER TABLE `lots`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
+  ADD KEY `author_id` (`author_id`),
   ADD KEY `category_id` (`category_id`),
   ADD KEY `winner_id` (`winner_id`);
 
@@ -243,7 +242,7 @@ ALTER TABLE `bets`
 --
 ALTER TABLE `lots`
   ADD CONSTRAINT `lots_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `lots_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `lots_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `lots_ibfk_3` FOREIGN KEY (`winner_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 COMMIT;
 
