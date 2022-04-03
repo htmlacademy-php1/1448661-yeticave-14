@@ -8,7 +8,7 @@
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function dbGetPrepareStmt($link, $sql, $data = [])
+function dbGetPrepareStmt(mysqli $link, string $sql, array $data = [])
 {
     $stmt = mysqli_prepare($link, $sql);
 

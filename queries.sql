@@ -17,7 +17,7 @@ INSERT INTO `users` (`email`, `name` ,`password` , `contacts`)
  ('albina@123.com', 'Альбина', 'Aly123', '+ 64 9 456 7890')
 
 -- Список объявлений;
-INSERT INTO `lots` (`title`,`description`,`image`, `price`, `end_date`,`step_bet`,`user_id`,`category_id`,`winner_id`)
+INSERT INTO `lots` (`title`,`description`,`image`, `price`, `end_date`,`step_bet`,`author_id`,`category_id`,`winner_id`)
  VALUES
  ('2014 Rossignol District Snowboard', 'Практичная доска средней жесткости', 'img/lot-1.jpg', 10999, '2022-03-30',
    1000, '1', '1', '3'),
@@ -43,7 +43,9 @@ INSERT INTO `bets` (`price`, `user_id`, `lot_id`)
    SELECT * FROM `categories`;
 
 -- получить самые новые, открытые лоты. Каждый лот должен включать название, стартовую цену, ссылку на изображение, цену, название категории;
-   SELECT l.id, l.title, l.image, l.price, c.name FROM lots l INNER JOIN categories c ON l.category_id = c.id ORDER BY creation_date DESC
+   SELECT l.id, l.title, l.price as startPrice, l.image, MAX(b.price) as maxBet, c.name FROM lots l
+   JOIN categories c ON l.category_id = c.id
+   LEFT JOIN bets b ON l.id = b.lot_id WHERE l.end_date > NOW() GROUP BY (l.id)
 
 -- показать лот по его ID. Получите также название категории, к которой принадлежит лот;
    SELECT l.id, title, name FROM lots l LEFT JOIN categories c ON  l.category_id = c.id WHERE l.id = 6;

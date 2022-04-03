@@ -1,4 +1,8 @@
 <?php
+/**
+ * @var array $lots
+ * @var array $categories
+ */
 $userName = 'Михаил';
 $title = 'Главная страница';
 
