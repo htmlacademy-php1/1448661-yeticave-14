@@ -1,11 +1,11 @@
 <?php
+
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
  *
  * @param $link mysqli Ресурс соединения
  * @param $sql string SQL запрос с плейсхолдерами вместо значений
  * @param array $data Данные для вставки на место плейсхолдеров
- *
  * @return mysqli_stmt Подготовленное выражение
  */
 function dbGetPrepareStmt(mysqli $link, string $sql, array $data = [])
@@ -51,3 +51,59 @@ function dbGetPrepareStmt(mysqli $link, string $sql, array $data = [])
 
     return $stmt;
 }
+
+/**
+ * @return mysqli|void
+ */
+function getLink()
+{
+    $config = require_once __DIR__ . '/../config/config.php';
+    $link = mysqli_connect($config['db']['host'], $config['db']['user'],
+        $config['db']['password'], $config['db']['database'] );
+    if (!$link) {
+        print("Error:  нет подключения к базе данных MySQL " . mysqli_connect_error());
+        exit();
+    }
+    mysqli_set_charset($link, "utf8");
+    return $link;
+};
+/**
+ * @param $link Ресурс соединения
+ * @return array Массив с категориями из базы данныз
+ */
+function getCategories ($link): array
+{
+
+  $sql = 'SELECT `id`, `name`, `character_code`  FROM `categories`';
+  $result = mysqli_query($link, $sql);
+  if ($result) {
+     return mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+  } else {
+      print("Error: Запрос не выполнен" . mysqli_connect_error());
+      exit();
+
+  }
+
+};
+
+/**
+ * @param $link mysqli Ресурс соединения
+ * @return array Массив с лотами из базы данныз
+ */
+function getOpenLots ($link): array
+{
+
+    $sql = 'SELECT l.id, l.title, l.price, l.image as url_image, l.end_date, MAX(b.price), c.name FROM lots l
+   JOIN categories c ON l.category_id = c.id
+   LEFT JOIN bets b ON l.id = b.lot_id WHERE l.end_date > NOW() GROUP BY (l.id)  ORDER BY l.date_creation DESC LIMIT 6' ;
+    $result = mysqli_query($link, $sql);
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    } else {
+        print("Error: Запрос не выполнен" . mysqli_connect_error());
+        exit();
+    }
+
+};
