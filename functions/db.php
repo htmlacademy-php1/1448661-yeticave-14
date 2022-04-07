@@ -68,7 +68,9 @@ function getLink()
     return $link;
 };
 /**
- * @param $link Ресурс соединения
+ * Функция возвращает массив с категориями
+ *
+ * @param $link mysqli Ресурс соединения
  * @return array Массив с категориями из базы данныз
  */
 function getCategories ($link): array
@@ -88,13 +90,15 @@ function getCategories ($link): array
 };
 
 /**
+ * Функция возвращает массив с новыми открытими лотами
+ *
  * @param $link mysqli Ресурс соединения
- * @return array Массив с лотами из базы данныз
+ * @return array Массив с лотами из базы данных
  */
 function getOpenLots ($link): array
 {
 
-    $sql = 'SELECT l.id, l.title, l.price, l.image as url_image, l.end_date, MAX(b.price), c.name FROM lots l
+    $sql = 'SELECT l.id, l.title, description, l.price, l.image as url_image, l.end_date, MAX(b.price), c.name FROM lots l
    JOIN categories c ON l.category_id = c.id
    LEFT JOIN bets b ON l.id = b.lot_id WHERE l.end_date > NOW() GROUP BY (l.id)  ORDER BY l.date_creation DESC LIMIT 6' ;
     $result = mysqli_query($link, $sql);
@@ -107,3 +111,30 @@ function getOpenLots ($link): array
     }
 
 };
+/**
+ * Функция возвращает массив лотами по id
+ * @param $link mysqli Ресурс соединения
+ * @param $lotId int ID лота
+ * @return array Массив с лотами из базы данных
+ */
+function getLotId ($link, $lotId) : array
+{
+    $lotId = intval($lotId);
+    $sql = "SELECT l.id, l.title, description, l.price, l.image as url_image, l.end_date, MAX(b.price) as max_price,
+       MIN(b.price) as min_price, c.name FROM lots l
+   JOIN categories c ON l.category_id = c.id
+   LEFT JOIN bets b ON l.id = b.lot_id
+    WHERE l.id = " . $lotId . ";
+    ";
+    $result = mysqli_query($link, $sql);
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    } else {
+        print("Error: Запрос не выполнен" . mysqli_connect_error());
+        exit();
+    }
+};
+
+
+
