@@ -2,11 +2,11 @@
 /**
  * @var array $lots
  * @var array $categories
+ * @var mysqli $link
  */
 
 
 require_once __DIR__ .'/bootstrap.php';
-$link = getLink();
 $categories = getCategories($link);
 $lots = getOpenLots($link);
 

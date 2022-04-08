@@ -1,4 +1,6 @@
 <?php
+$config = require_once __DIR__ . '/../config/config.php';
+$link = dbConnect($config);
 
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
@@ -53,11 +55,11 @@ function dbGetPrepareStmt(mysqli $link, string $sql, array $data = [])
 }
 
 /**
+ * Функция для подключения к БД
  * @return mysqli|void
  */
-function getLink()
+function dbConnect($config)
 {
-    $config = require_once __DIR__ . '/../config/config.php';
     $link = mysqli_connect($config['db']['host'], $config['db']['user'],
         $config['db']['password'], $config['db']['database'] );
     if (!$link) {
@@ -73,7 +75,7 @@ function getLink()
  * @param $link mysqli Ресурс соединения
  * @return array Массив с категориями из базы данныз
  */
-function getCategories ($link): array
+function getCategories (mysqli $link): array
 {
 
   $sql = 'SELECT `id`, `name`, `character_code`  FROM `categories`';
@@ -95,7 +97,7 @@ function getCategories ($link): array
  * @param $link mysqli Ресурс соединения
  * @return array Массив с лотами из базы данных
  */
-function getOpenLots ($link): array
+function getOpenLots (mysqli $link): array
 {
 
     $sql = 'SELECT l.id, l.title, description, l.price, l.image as url_image, l.end_date, MAX(b.price), c.name FROM lots l
@@ -117,7 +119,7 @@ function getOpenLots ($link): array
  * @param $lotId int ID лота
  * @return array Массив с лотами из базы данных
  */
-function getLotId ($link, $lotId) : array
+function getLogById (mysqli $link, int $lotId) : array
 {
     $lotId = intval($lotId);
     $sql = "SELECT l.id, l.title, description, l.price, l.image as url_image, l.end_date, MAX(b.price) as max_price,

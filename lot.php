@@ -1,7 +1,13 @@
 <?php
+/**
+ * @var array $lots
+ * @var array $categories
+ * @var mysqli $link
+ */
+
 require_once __DIR__ . '/bootstrap.php';
-//Подключение к БД
-$link = getLink();
+
+
 //Получает массив категорий и БД
 $categories = getCategories($link);
 ////Проверяет существование параметра запроса с ID лота.
@@ -19,7 +25,7 @@ if ($lotId === NULL) {
 }
 
 //Получает массив с лотами из БД
-$lots = getLotId ($link, $lotId) ;
+$lots = getLogById ($link, $lotId) ;
 //Проверяет на наличие в запросе id
 if ($lots[0]['id']) {
     $content = includeTemplate('lot.php',
