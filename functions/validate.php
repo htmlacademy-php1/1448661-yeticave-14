@@ -20,5 +20,19 @@ function isDateValid(string $date): bool
     $dateTimeObj = date_create_from_format($format_to_check, $date);
 
     return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
+};
+
+/**
+ * Функция возвращает отформатированную цену и пустую строку если переменная переданная в атрибут не имеент значения
+ * @param $price
+ * @return string
+ */
+function checkPriceValue ($price): string
+{
+    if (isset($price)){
+        return priceFormatting($price);
+    } else {
+        return '';
+    }
 }
 

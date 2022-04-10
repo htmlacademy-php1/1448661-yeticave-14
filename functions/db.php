@@ -1,4 +1,6 @@
 <?php
+$config = require_once __DIR__ . '/../config/config.php';
+$link = dbConnect($config);
 
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
@@ -53,11 +55,11 @@ function dbGetPrepareStmt(mysqli $link, string $sql, array $data = [])
 }
 
 /**
+ * Функция для подключения к БД
  * @return mysqli|void
  */
-function getLink()
+function dbConnect($config)
 {
-    $config = require_once __DIR__ . '/../config/config.php';
     $link = mysqli_connect($config['db']['host'], $config['db']['user'],
         $config['db']['password'], $config['db']['database'] );
     if (!$link) {
@@ -68,10 +70,12 @@ function getLink()
     return $link;
 };
 /**
- * @param $link Ресурс соединения
+ * Функция возвращает массив с категориями
+ *
+ * @param $link mysqli Ресурс соединения
  * @return array Массив с категориями из базы данныз
  */
-function getCategories ($link): array
+function getCategories (mysqli $link): array
 {
 
   $sql = 'SELECT `id`, `name`, `character_code`  FROM `categories`';
@@ -88,13 +92,15 @@ function getCategories ($link): array
 };
 
 /**
+ * Функция возвращает массив с новыми открытими лотами
+ *
  * @param $link mysqli Ресурс соединения
- * @return array Массив с лотами из базы данныз
+ * @return array Массив с лотами из базы данных
  */
-function getOpenLots ($link): array
+function getOpenLots (mysqli $link): array
 {
 
-    $sql = 'SELECT l.id, l.title, l.price, l.image as url_image, l.end_date, MAX(b.price), c.name FROM lots l
+    $sql = 'SELECT l.id, l.title, description, l.price, l.image as url_image, l.end_date, MAX(b.price), c.name FROM lots l
    JOIN categories c ON l.category_id = c.id
    LEFT JOIN bets b ON l.id = b.lot_id WHERE l.end_date > NOW() GROUP BY (l.id)  ORDER BY l.date_creation DESC LIMIT 6' ;
     $result = mysqli_query($link, $sql);
@@ -107,3 +113,30 @@ function getOpenLots ($link): array
     }
 
 };
+/**
+ * Функция возвращает массив лотами по id
+ * @param $link mysqli Ресурс соединения
+ * @param $lotId int ID лота
+ * @return array Массив с лотами из базы данных
+ */
+function getLogById (mysqli $link, int $lotId) : array
+{
+    $lotId = intval($lotId);
+    $sql = "SELECT l.id, l.title, description, l.price, l.image as url_image, l.end_date, MAX(b.price) as max_price,
+       MIN(b.price) as min_price, c.name FROM lots l
+   JOIN categories c ON l.category_id = c.id
+   LEFT JOIN bets b ON l.id = b.lot_id
+    WHERE l.id = " . $lotId . ";
+    ";
+    $result = mysqli_query($link, $sql);
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    } else {
+        print("Error: Запрос не выполнен" . mysqli_connect_error());
+        exit();
+    }
+};
+
+
+

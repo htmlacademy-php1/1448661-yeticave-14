@@ -48,9 +48,9 @@ $isAuth = rand(0, 1);
             </div>
         </header>
 
-        <main class="container">
+
             <?= $content; ?>
-        </main>
+
     </div>
 
     <footer class="main-footer">
