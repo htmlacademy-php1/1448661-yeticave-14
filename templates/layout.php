@@ -1,4 +1,11 @@
 <?php
+/**
+ * @var array $lots
+ * @var array $categories
+ * @var string $content
+ * @var string $title
+ * @var string $userName
+ */
 $isAuth = rand(0, 1);
 ?>
 
@@ -25,7 +32,7 @@ $isAuth = rand(0, 1);
                     <input type="search" name="search" placeholder="Поиск лота">
                     <input class="main-header__search-btn" type="submit" name="find" value="Найти">
                 </form>
-                <a class="main-header__add-lot button" href="pages/add-lot.html">Добавить лот</a>
+                <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
 
                 <nav class="user-menu">
                     <?php if ($isAuth === 1) : ?>
@@ -115,8 +122,8 @@ $isAuth = rand(0, 1);
         </div>
     </footer>
 
-    <script src="flatpickr.js"></script>
-    <script src="script.js"></script>
+    <!--<script src="flatpickr.js"></script>
+    <script src="script.js"></script>-->
 </body>
 
 </html>

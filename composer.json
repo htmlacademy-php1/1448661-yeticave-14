@@ -6,6 +6,7 @@
         "test": "./vendor/bin/phpunit tests --colors --bootstrap=bootstrap.php"
       },
   "require": {
-    "ext-mysqli": "*"
+    "ext-mysqli": "*",
+    "ext-fileinfo": "*"
   }
 }

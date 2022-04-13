@@ -114,3 +114,4 @@ function getDtRange(string $endDate, string $currentDate): array
 
     return [$hours, $minutes];
 }
+

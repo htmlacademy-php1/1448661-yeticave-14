@@ -9,6 +9,7 @@ $link = dbConnect($config);
  * @param $sql string SQL запрос с плейсхолдерами вместо значений
  * @param array $data Данные для вставки на место плейсхолдеров
  * @return mysqli_stmt Подготовленное выражение
+
  */
 function dbGetPrepareStmt(mysqli $link, string $sql, array $data = [])
 {
@@ -37,6 +38,7 @@ function dbGetPrepareStmt(mysqli $link, string $sql, array $data = [])
             if ($type) {
                 $types .= $type;
                 $stmt_data[] = $value;
+
             }
         }
 
@@ -45,7 +47,7 @@ function dbGetPrepareStmt(mysqli $link, string $sql, array $data = [])
         $func = 'mysqli_stmt_bind_param';
         $func(...$values);
 
-        if (mysqli_errno($link) > 0) {
+       if (mysqli_errno($link) > 0) {
             $errorMsg = 'Не удалось связать подготовленное выражение с параметрами: ' . mysqli_error($link);
             die($errorMsg);
         }
@@ -68,7 +70,7 @@ function dbConnect($config)
     }
     mysqli_set_charset($link, "utf8");
     return $link;
-};
+}
 /**
  * Функция возвращает массив с категориями
  *
@@ -89,7 +91,7 @@ function getCategories (mysqli $link): array
 
   }
 
-};
+}
 
 /**
  * Функция возвращает массив с новыми открытими лотами
@@ -112,9 +114,9 @@ function getOpenLots (mysqli $link): array
         exit();
     }
 
-};
+}
 /**
- * Функция возвращает массив лотами по id
+ * Функция возвращает массив с лотами по id
  * @param $link mysqli Ресурс соединения
  * @param $lotId int ID лота
  * @return array Массив с лотами из базы данных
@@ -136,7 +138,52 @@ function getLogById (mysqli $link, int $lotId) : array
         print("Error: Запрос не выполнен" . mysqli_connect_error());
         exit();
     }
-};
+}
+/**
+ * Функция добавляет новый лот в бд и делает переадресацию на страницу с новым лотом.
+ * @param mysqli $link
+ * @param array $lot
+ * @param array $categories
+ *
+ */
+function addLot (mysqli $link, array $lot, array $categories)
+{
 
+       $sql = 'INSERT INTO `lots`( `title`, `category_id`, `description`, `price`, `step_bet`, `end_date`, `image`,  `author_id`)
+             VALUES
+             (?, ?, ?, ?, ?, ?, ?, 1)';
+
+        $stmt = dbGetPrepareStmt($link, $sql, $lot);
+
+        $result = mysqli_stmt_execute($stmt);
+    if ($result) {
+        $lotId = mysqli_insert_id($link);
+        header("Location: lot.php?id=" . $lotId);
+
+    } else {
+        $content = includeTemplate('404.php',
+            ['categories'=> $categories]);
+
+        $layoutContent = includeTemplate('layout.php',
+            ['content' => $content,
+                'categories'=> $categories, 'userName' => 'Михаил', 'title' => 'Страница лота']);
+
+        print($layoutContent);
+        exit();
+    }
+}
+
+/**
+ * Функция возвращает массив с id категориями.
+ * @return  array Возвращает массив с id категориями
+ */
+function getCategoriesId (array $arrayCategories) : array
+{
+    $categoryId =[];
+    foreach ($arrayCategories as $val) {
+        $categoryId[] = $val['id'];
+    }
+    return $categoryId;
+}
 
 
