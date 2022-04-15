@@ -47,7 +47,7 @@ function includeTemplate(string $name, array $data = []): string
  */
 function getNounPluralForm(int $number, string $one, string $two, string $many): string
 {
-    $number = (int) $number;
+    $number = (int)$number;
     $mod10 = $number % 10;
     $mod100 = $number % 100;
 
@@ -70,18 +70,16 @@ function getNounPluralForm(int $number, string $one, string $two, string $many):
 }
 
 
-
-
 /**
  * Возвращает отформатированную цену со знаком рубля.
  * @param integer $price Входящая цена.
  * @return string Отформатированная цена с пробелом после первых двух знаков со знаком рубля.
  */
-function  priceFormatting(int $price): string
+function priceFormatting(int $price): string
 {
     $price = ceil($price);
     if ($price > 1000) {
-        $price =  number_format($price, 0, null, ' ');
+        $price = number_format($price, 0, null, ' ');
     }
     return $price . ' &#8381';
 }
@@ -108,7 +106,7 @@ function getDtRange(string $endDate, string $currentDate): array
     $minutes = $diff->i;
 
     if ($days > 0) {
-        $hours =  $days * 24 + $hours;
+        $hours = $days * 24 + $hours;
         return [$hours, $minutes];
     }
 

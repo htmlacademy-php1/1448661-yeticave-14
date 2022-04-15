@@ -5,86 +5,56 @@
  */
 require_once __DIR__ . '/bootstrap.php';
 $categories = getCategories($link);
-
-
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  $requiredFields = ['title', 'category_id', 'description', 'price', 'step_bet', 'end_date'];
-
 $categoryIds = getCategoriesId($categories);
 
-$rules = [
-    'category_id' => function($categoryId) use ($categoryIds) {
-    return validateCategory($categoryId, $categoryIds );
-    },
-    'price' => function($price) {
-    return validateValue($price);
-    },
-    'end_date' => function($endDate) {
-    return validateEndDate ($endDate);
-    },
-    'step_bet' => function($stepBet){
-        return validateValue($stepBet);
-    }
-];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $lot = filter_input_array(INPUT_POST, ['title' => FILTER_DEFAULT, 'category_id' => FILTER_DEFAULT,
+        'description' => FILTER_DEFAULT, 'price' => FILTER_DEFAULT, 'step_bet' => FILTER_DEFAULT, 'end_date' => FILTER_DEFAULT], true);
 
-$lot = filter_input_array(INPUT_POST, ['title' => FILTER_DEFAULT, 'category_id' => FILTER_DEFAULT,
-    'description' => FILTER_DEFAULT, 'price' => FILTER_DEFAULT, 'step_bet' => FILTER_DEFAULT, 'end_date' => FILTER_DEFAULT], true );
+    $errors = validateFormLot($lot, $categoryIds);
 
-    $errors = [];
-
-    foreach ($lot as $key => $value) {
-        if (isset($rules[$key])) {
-            $rule = $rules[$key];
-            $errors[$key] = $rule($value);
+    if (!empty($_FILES['image']['name'])) {
+        $fileName = uploadFile($_FILES);
+        if (empty($fileName)) {
+            $errors['image'] = 'Загрузите картинку в формате png или jpeg';
+        } else {
+            $lot['image'] = $fileName;
         }
-        if (in_array($key, $requiredFields) and empty($value)){
-              $errors[$key] = "Поле надо заполнить";
-        }
-    };
-
-
-if (!empty($_FILES['image']['name'])) {
-    $tmpName = $_FILES['image']['tmp_name'];
-    $name = $_FILES['image']['name'];
-    $fileType = mime_content_type($tmpName);
-
-    if ($fileType === 'image/png'){
-        $name = uniqid() . '.png';
-        move_uploaded_file($tmpName, 'uploads/' . $name);
-        $lot['image'] = 'uploads/' . $name;
-    } elseif ($fileType === 'image/jpeg'){
-        $name = uniqid() . '.jpeg';
-        move_uploaded_file($tmpName, 'uploads/' . $name);
-        $lot['image'] = 'uploads/' . $name;
     } else {
-        $errors['file'] = 'Загрузите картинку в формате png или jpeg';
+        $errors['image'] = 'Загрузите картинку';
     }
-} else {
-    $errors['file'] = 'Загрузите картинку';
-};
 
     $errors = array_filter($errors);
 
     $content = includeTemplate('add.php',
-        ['categories'=> $categories, 'errors' => $errors] );
+        ['categories' => $categories, 'errors' => $errors]);
 
 
+    if (empty($errors)) {
+        $result = addLot($link, $lot);
+        if ($result) {
+            $lotId = mysqli_insert_id($link);
+            header("Location: lot.php?id=" . $lotId);
+        } else {
+            $content = includeTemplate('404.php',
+                ['categories' => $categories]);
 
-if (empty($errors)) {
+            $layoutContent = includeTemplate('layout.php',
+                ['content' => $content,
+                    'categories' => $categories, 'userName' => 'Михаил', 'title' => 'Страница лота']);
 
-    addLot($link, $lot, $categories );
-
-}
+            print($layoutContent);
+            exit();
+        }
+    }
 } else {
     $content = includeTemplate('add.php',
-        ['categories'=> $categories] );
+        ['categories' => $categories]);
 }
 $layoutContent = includeTemplate('layout.php',
     ['content' => $content,
         'userName' => 'Михаил',
-        'categories'=> $categories,
-        'title'=> 'Добавление лота']);
+        'categories' => $categories,
+        'title' => 'Добавление лота']);
 print($layoutContent);
 
