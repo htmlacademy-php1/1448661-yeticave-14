@@ -141,7 +141,7 @@ CREATE TABLE `lots` (
   `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `image` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` int UNSIGNED NOT NULL,
-  `end_date` datetime NOT NULL,
+  `end_date` DATETIME NOT NULL,
   `step_bet` int UNSIGNED NOT NULL,
   `author_id` int UNSIGNED NOT NULL,
   `category_id` int UNSIGNED NOT NULL,
