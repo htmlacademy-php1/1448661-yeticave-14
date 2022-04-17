@@ -156,3 +156,53 @@ function uploadFile(array $file): string
     }
 }
 
+/**
+ * @param mysqli $link
+ * @param string $email
+ * @param array $newAccount
+ * @return string|void
+ */
+function validateEmail(mysqli $link, string $email, array $newAccount)
+{
+
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $sql = "SELECT `email` FROM `users` WHERE email= '" . $newAccount['email'] . "'";
+        $result = mysqli_query($link, $sql);
+        if ($result) {
+            if (!empty(mysqli_fetch_all($result, MYSQLI_ASSOC))) {
+                return 'email используется другим пользователем';
+            }
+
+        } else {
+            print("Error: Запрос не выполнен" . mysqli_connect_error());
+            exit();
+        }
+    } else {
+        return 'Некорректно введен e-mail';
+    }
+
+}
+
+/**
+ * Функция валидирует форму регистрации
+ * @param mysqli $link
+ * @param array $newAccount
+ * @return array
+ */
+function validateFormRegistration(mysqli $link, array $newAccount): array
+{
+    $requiredFields = ['email', 'password', 'name', 'contacts'];
+
+    $errors = [];
+    foreach ($newAccount as $key => $value) {
+
+        if (in_array($key, $requiredFields) and empty($value)) {
+            $errors[$key] = "Поле надо заполнить";
+        } elseif ($key === 'email') {
+            $errors['email'] = validateEmail($link, $value, $newAccount);
+        }
+
+    }
+    return $errors;
+}
+
