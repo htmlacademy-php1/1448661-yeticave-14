@@ -27,7 +27,7 @@
                 <label for="lot-name">Наименование <sup>*</sup></label>
                 <input id="lot-name" type="text" name="title" value="<?= getPostVal('title'); ?>"
                        placeholder="Введите наименование лота">
-                <span class="form__error"><?= isset($errors['title']) ? $errors['title'] : '' ?></span>
+                <span class="form__error"><?= isset($errors['title']) ? $errors['title'] = 'Введите наименование лота' : '' ?></span>
             </div>
             <?php $classname = isset($errors['category_id']) ? "form__item--invalid" : "" ?>
             <div class="form__item <?= $classname; ?>">
@@ -50,7 +50,7 @@
             <textarea
                 id="message" name="description"
                 placeholder="Напишите описание лота"><?= getPostVal('description'); ?></textarea>
-            <span class="form__error"><?= isset($errors['description']) ? $errors['description'] : '' ?></span>
+            <span class="form__error"><?= isset($errors['description']) ? $errors['description'] = 'Напишите описание лота' : '' ?></span>
         </div>
         <?php $classname = isset($errors['image']) ? "form__item--invalid" : "" ?>
         <div class="form__item form__item--file <?= $classname; ?>">

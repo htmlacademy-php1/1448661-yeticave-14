@@ -173,3 +173,20 @@ function getCategoriesId(array $arrayCategories): array
 }
 
 
+/**
+ * Функция записывает в БД нового пользователя
+ * @param mysqli $link
+ * @param array $newAccount
+ * @return bool
+ */
+function addUser (mysqli $link, array $newAccount): bool
+{
+    if (isset($newAccount['password'])){
+        $newAccount['password'] = password_hash($newAccount['password'], PASSWORD_DEFAULT);
+    }
+
+    $sql = 'INSERT INTO `users`(`email`, `password`, `name`, `contacts`)
+ VALUES(?,?,?,?)';
+    $stmt = dbGetPrepareStmt($link, $sql, $newAccount);
+    return mysqli_stmt_execute($stmt);
+}
