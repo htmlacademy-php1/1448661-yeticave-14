@@ -28,8 +28,9 @@
                 <p class="lot-item__description"><?= $lot['description']; ?></p>
 
             </div>
-            <div class="lot-item__right">
-                <div class="lot-item__state">
+            <div class="lot-item__right ">
+                <?php $display = empty($_SESSION) ? 'display: none' : " " ;?>
+                <div class="lot-item__state" style="<?= $display; ?>" >
                     <?php $time = getDtRange($lot['end_date'], 'now') ?>
                     <div class="lot-item__timer timer <?php if ($time[0] < 1): ?>timer--finishing<?php endif; ?> ">
                         <?= sprintf("%02d", $time[0]) . ':' . sprintf("%02d", $time[1]); ?>

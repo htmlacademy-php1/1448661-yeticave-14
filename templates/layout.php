@@ -6,7 +6,9 @@
  * @var string $title
  * @var string $userName
  */
-$isAuth = rand(0, 1);
+
+require_once __DIR__ . './../bootstrap.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +27,7 @@ $isAuth = rand(0, 1);
     <header class="main-header">
         <div class="main-header__container container">
             <h1 class="visually-hidden">YetiCave</h1>
-            <a class="main-header__logo">
+            <a class="main-header__logo" href="/">
                 <img src="../img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
             </a>
             <form class="main-header__search" method="get" action="https://echo.htmlacademy.ru" autocomplete="off">
@@ -35,11 +37,11 @@ $isAuth = rand(0, 1);
             <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
 
             <nav class="user-menu">
-                <?php if ($isAuth === 1) : ?>
+                <?php if (!empty($_SESSION)) : ?>
                     <div class="user-menu__logged">
                         <p><?= $userName; ?></p>
                         <a class="user-menu__bets" href="pages/my-bets.html">Мои ставки</a>
-                        <a class="user-menu__logout" href="#">Выход</a>
+                        <a class="user-menu__logout" href="/logout.php">Выход</a>
                     </div>
                 <?php else : ?>
                     <ul class="user-menu__list">
@@ -47,7 +49,7 @@ $isAuth = rand(0, 1);
                             <a href="sign-up.php">Регистрация</a>
                         </li>
                         <li class="user-menu__item">
-                            <a href="#">Вход</a>
+                            <a href="/login.php">Вход</a>
                         </li>
                     </ul>
                 <?php endif; ?>

@@ -206,3 +206,36 @@ function validateFormRegistration(mysqli $link, array $newAccount): array
     return $errors;
 }
 
+
+function validateLoginForm(mysqli $link, array $formLogin)
+{
+    $errors = [];
+    $requiredFields = ['email', 'password'];
+
+    foreach ($formLogin as $key => $value) {
+        if (in_array($key, $requiredFields) and empty($value)) {
+            $errors[$key] = "Поле надо заполнить";
+        } else {
+            if (filter_var($formLogin['email'], FILTER_VALIDATE_EMAIL)) {
+                $sql = "SELECT `id`, `name`, `password` FROM `users` WHERE email= '" . $formLogin['email'] . "'";
+                $result = mysqli_query($link, $sql);
+                $ArrayFromDB = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                if (empty($ArrayFromDB)) {
+                    $errors['email'] = 'Пользователь с указанным email не существует';
+                } else {
+                    if (!password_verify($formLogin['password'], $ArrayFromDB[0]['password'])) {
+                        $errors['password'] = 'Введен неверный пароль';
+                    } else {
+                        $_SESSION['id'] = $ArrayFromDB[0]['id'];
+                        $_SESSION['name'] = $ArrayFromDB[0]['name'];
+                    }
+                }
+
+            } else {
+                $errors['email'] = 'Некорректно введен e-mail';
+            }
+        }
+    }
+
+    return $errors;
+}

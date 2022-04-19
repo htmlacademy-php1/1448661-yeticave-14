@@ -3,9 +3,17 @@
  * @var array $categories
  * @var mysqli $link
  */
+session_start();
+if (empty($_SESSION)) {
+    http_response_code(403);
+    header('Location: /login.php');
+    exit();
+}
+
 require_once __DIR__ . '/bootstrap.php';
 $categories = getCategories($link);
 $categoryIds = getCategoriesId($categories);
+$userName = checkSessionsName($_SESSION);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lot = filter_input_array(INPUT_POST, ['title' => FILTER_DEFAULT, 'category_id' => FILTER_DEFAULT,
@@ -31,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     if (empty($errors)) {
-        $result = addLot($link, $lot);
+        $result = addLot($link, $lot, $_SESSION);
         if ($result) {
             $lotId = mysqli_insert_id($link);
             header("Location: lot.php?id=" . $lotId);
@@ -41,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $layoutContent = includeTemplate('layout.php',
                 ['content' => $content,
-                    'categories' => $categories, 'userName' => 'Михаил', 'title' => 'Страница лота']);
+                    'categories' => $categories, 'userName' => $userName, 'title' => 'Страница лота']);
 
             print($layoutContent);
             exit();
@@ -53,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $layoutContent = includeTemplate('layout.php',
     ['content' => $content,
-        'userName' => 'Михаил',
+        'userName' => $userName,
         'categories' => $categories,
         'title' => 'Добавление лота']);
 print($layoutContent);

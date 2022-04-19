@@ -147,13 +147,13 @@ function getLogById(mysqli $link, int $lotId): array
  * @param array $lot
  * @return bool возвращает результат записив бд
  */
-function addLot(mysqli $link, array $lot,)
+function addLot(mysqli $link, array $lot, $session)
 {
     $lot['end_date'] = date("Y-m-d H:i:s", strtotime($lot['end_date']));
-
+    $lot['id'] = $_SESSION['id'];
     $sql = 'INSERT INTO `lots`( `title`, `category_id`, `description`, `price`, `step_bet`, `end_date`, `image`,  `author_id`)
              VALUES
-             (?, ?, ?, ?, ?, ?, ?, 1)';
+             (?, ?, ?, ?, ?, ?, ?, ?)';
 
     $stmt = dbGetPrepareStmt($link, $sql, $lot);
     return mysqli_stmt_execute($stmt);
@@ -190,3 +190,4 @@ function addUser (mysqli $link, array $newAccount): bool
     $stmt = dbGetPrepareStmt($link, $sql, $newAccount);
     return mysqli_stmt_execute($stmt);
 }
+

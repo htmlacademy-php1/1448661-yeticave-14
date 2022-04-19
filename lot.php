@@ -4,8 +4,9 @@
  * @var array $categories
  * @var mysqli $link
  */
-
+session_start();
 require_once __DIR__ . '/bootstrap.php';
+$userName = checkSessionsName($_SESSION);
 
 
 //Получает массив категорий и БД
@@ -19,7 +20,7 @@ if ($lotId === NULL) {
 
     $layoutContent = includeTemplate('layout.php',
         ['content' => $content,
-            'categories' => $categories, 'userName' => 'Михаил', 'title' => 'Страница лота']);
+            'categories' => $categories, 'userName' => $userName, 'title' => 'Страница лота']);
     print($layoutContent);
     exit();
 }
@@ -34,7 +35,7 @@ if ($lots[0]['id']) {
 
     $layoutContent = includeTemplate('layout.php',
         ['content' => $content,
-            'categories' => $categories, 'userName' => 'Михаил', 'title' => 'Страница лота']);
+            'categories' => $categories, 'title' => 'Страница лота', 'userName' => $userName]);
 
     print($layoutContent);
 } else {
@@ -43,7 +44,7 @@ if ($lots[0]['id']) {
 
     $layoutContent = includeTemplate('layout.php',
         ['content' => $content,
-            'categories' => $categories, 'userName' => 'Михаил', 'title' => 'Страница лота']);
+            'categories' => $categories, 'userName' => $userName, 'title' => 'Страница лота']);
 
     print($layoutContent);
     exit();
