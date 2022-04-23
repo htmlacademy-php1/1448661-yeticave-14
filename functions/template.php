@@ -118,10 +118,11 @@ function getDtRange(string $endDate, string $currentDate): array
  * @param array $sessions
  * @return string
  */
-function checkSessionsName(array$sessions) : string  {
+function checkSessionsName(array $sessions): string
+{
     if (!empty($_SESSION)) {
-       return $_SESSION['name'];
+        return $_SESSION['name'];
     } else {
-       return  ' ';
+        return ' ';
     }
 }

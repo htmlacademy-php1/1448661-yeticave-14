@@ -1,10 +1,6 @@
 <?php
-$config = require_once __DIR__ . '/../config/config.php';
-$link = dbConnect($config);
-
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
- *
  * @param $link mysqli Ресурс соединения
  * @param $sql string SQL запрос с плейсхолдерами вместо значений
  * @param array $data Данные для вставки на место плейсхолдеров
@@ -73,7 +69,6 @@ function dbConnect($config)
 
 /**
  * Функция возвращает массив с категориями
- *
  * @param $link mysqli Ресурс соединения
  * @return array Массив с категориями из базы данныз
  */
@@ -95,7 +90,6 @@ function getCategories(mysqli $link): array
 
 /**
  * Функция возвращает массив с новыми открытими лотами
- *
  * @param $link mysqli Ресурс соединения
  * @return array Массив с лотами из базы данных
  */
@@ -129,8 +123,7 @@ function getLogById(mysqli $link, int $lotId): array
        MIN(b.price) as min_price, c.name FROM lots l
    JOIN categories c ON l.category_id = c.id
    LEFT JOIN bets b ON l.id = b.lot_id
-    WHERE l.id = " . $lotId . ";
-    ";
+    WHERE l.id =  {$lotId} ;";
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -142,20 +135,23 @@ function getLogById(mysqli $link, int $lotId): array
 }
 
 /**
- * Функция добавляет новый лот в бд и делает переадресацию на страницу с новым лотом.
+ * Функция добавляет новый лот в бд.
  * @param mysqli $link
- * @param array $lot
- * @return bool возвращает результат записив бд
+ * @param array $lotData
+ * @param $userId
+ * @return bool возвращает результат записи из бд
  */
-function addLot(mysqli $link, array $lot, $session)
+
+function addLot(mysqli $link, array $lotData, $userId): bool
 {
-    $lot['end_date'] = date("Y-m-d H:i:s", strtotime($lot['end_date']));
-    $lot['id'] = $_SESSION['id'];
-    $sql = 'INSERT INTO `lots`( `title`, `category_id`, `description`, `price`, `step_bet`, `end_date`, `image`,  `author_id`)
+    $lotData['end_date'] = date("Y-m-d H:i:s", strtotime($lotData['end_date']));
+    $lotData['image'] = uploadFile($_FILES);
+    $lotData['user_id'] = $userId;
+    $sql = 'INSERT INTO `lots`( `title`, `category_id`, `description`, `price`, `step_bet`, `end_date`, `image`, `user_id`)
              VALUES
              (?, ?, ?, ?, ?, ?, ?, ?)';
 
-    $stmt = dbGetPrepareStmt($link, $sql, $lot);
+    $stmt = dbGetPrepareStmt($link, $sql, $lotData);
     return mysqli_stmt_execute($stmt);
 }
 
@@ -179,11 +175,10 @@ function getCategoriesId(array $arrayCategories): array
  * @param array $newAccount
  * @return bool
  */
-function addUser (mysqli $link, array $newAccount): bool
+function addUser(mysqli $link, array $newAccount): bool
 {
-    if (isset($newAccount['password'])){
-        $newAccount['password'] = password_hash($newAccount['password'], PASSWORD_DEFAULT);
-    }
+
+    $newAccount['password'] = password_hash($newAccount['password'], PASSWORD_DEFAULT);
 
     $sql = 'INSERT INTO `users`(`email`, `password`, `name`, `contacts`)
  VALUES(?,?,?,?)';
@@ -191,3 +186,21 @@ function addUser (mysqli $link, array $newAccount): bool
     return mysqli_stmt_execute($stmt);
 }
 
+/**
+ * Функция получает пользователя из БД по email
+ * @param mysqli $link
+ * @param string $email
+ * @return mixed|null
+ */
+function getUserByEmail(mysqli $link, string $email): array|null
+{
+
+    $sql = "SELECT `id`, `name`, `password`, `email` FROM `users` WHERE email= ?";
+
+    $stmt = mysqli_prepare($link, $sql);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $arrayFromDB = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    return $arrayFromDB[0] ?? null;
+}

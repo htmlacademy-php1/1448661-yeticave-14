@@ -30,10 +30,10 @@ CREATE TABLE `yeti`. `lots`
  `image` varchar(50) NOT NULL , `price` INT UNSIGNED NOT NULL ,
  `end_date` DATETIME NOT NULL ,
  `step_bet` INT UNSIGNED NOT NULL ,
- `author_id` INT UNSIGNED NOT NULL ,
+ `user_id` INT UNSIGNED NOT NULL ,
  `category_id` INT UNSIGNED NOT NULL ,
  `winner_id` INT UNSIGNED NULL ,
-  PRIMARY KEY (`id`), INDEX (`author_id`), INDEX (`category_id`), INDEX (`winner_id`)) ENGINE = InnoDB;
+  PRIMARY KEY (`id`), INDEX (`user_id`), INDEX (`category_id`), INDEX (`winner_id`)) ENGINE = InnoDB;
 
 
 -- --------------------------------------------------------
@@ -72,7 +72,7 @@ ALTER TABLE `bets`
 --
 ALTER TABLE `lots`
   ADD CONSTRAINT `lots_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `lots_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `lots_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `lots_ibfk_3` FOREIGN KEY (`winner_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 -- --------------------------------------------------------
 --
@@ -143,7 +143,7 @@ CREATE TABLE `lots` (
   `price` int UNSIGNED NOT NULL,
   `end_date` DATETIME NOT NULL,
   `step_bet` int UNSIGNED NOT NULL,
-  `author_id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
   `category_id` int UNSIGNED NOT NULL,
   `winner_id` int UNSIGNED NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -187,7 +187,7 @@ ALTER TABLE `categories`
 --
 ALTER TABLE `lots`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `author_id` (`author_id`),
+  ADD KEY `user_id` (`user_id`),
   ADD KEY `category_id` (`category_id`),
   ADD KEY `winner_id` (`winner_id`);
 
@@ -242,7 +242,7 @@ ALTER TABLE `bets`
 --
 ALTER TABLE `lots`
   ADD CONSTRAINT `lots_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `lots_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `lots_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `lots_ibfk_3` FOREIGN KEY (`winner_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 COMMIT;
 
