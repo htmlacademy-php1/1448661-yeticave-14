@@ -6,28 +6,33 @@
  */
 
 require_once __DIR__ . '/bootstrap.php';
-$newAccountData = [];
-$errors =[];
+
 $categories = getCategories($link);
-$userName = checkSessionsName($_SESSION);
+$userId = getUserIdFromSession();
+
+$errors = [];
+$formLogin = [];
+
+if ($userId !== null) {
+    responseForbidden($categories);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $newAccountData = filter_input_array(INPUT_POST, [
+    $formLogin = filter_input_array(INPUT_POST, [
         'email' => FILTER_DEFAULT,
-        'password' => FILTER_DEFAULT,
-        'name' => FILTER_DEFAULT, 'contacts' => FILTER_DEFAULT
+        'password' => FILTER_DEFAULT
     ], add_empty: true);
 
-    $errors = validateSignUpForm ($link ,$newAccountData);
-    if (!$errors) {
-        addUser($link, $newAccountData);
-        header("Location: /login.php");
+    $errors = validateLoginForm($link, $formLogin);
+
+    if (!$errors && login($link, $formLogin)) {
+        header("Location: /");
         exit();
     }
 }
-$content = includeTemplate('sign-up.php', [
+$content = includeTemplate('login.php', [
     'categories' => $categories,
-    'newAccountData' => $newAccountData,
+    'formLogin' => $formLogin,
     'errors' => $errors
 ]);
 
@@ -38,3 +43,4 @@ $layoutContent = includeTemplate('layout.php', [
 ]);
 
 print($layoutContent);
+

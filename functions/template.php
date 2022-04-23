@@ -113,3 +113,16 @@ function getDtRange(string $endDate, string $currentDate): array
     return [$hours, $minutes];
 }
 
+/**
+ * Функция проверяет не пуст ли массив $_SESSION по ключу name;
+ * @param array $sessions
+ * @return string
+ */
+function checkSessionsName(array $sessions): string
+{
+    if (!empty($_SESSION)) {
+        return $_SESSION['name'];
+    } else {
+        return ' ';
+    }
+}
