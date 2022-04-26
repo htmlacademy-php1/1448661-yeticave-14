@@ -96,9 +96,9 @@ function getCategories(mysqli $link): array
 function getOpenLots(mysqli $link): array
 {
 
-    $sql = 'SELECT l.id, l.title, description, l.price, l.image as url_image, l.end_date, MAX(b.price), c.name FROM lots l
+    $sql = 'SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, MAX(b.price), c.name FROM lots l
    JOIN categories c ON l.category_id = c.id
-   LEFT JOIN bets b ON l.id = b.lot_id WHERE l.end_date > NOW() GROUP BY (l.id)  ORDER BY l.date_creation DESC LIMIT 6';
+   LEFT JOIN bets b ON l.id = b.lot_id WHERE l.end_date > NOW() GROUP BY (l.id)  ORDER BY l.date_creation DESC LIMIT 6 OFFSET 0 ';
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -113,26 +113,22 @@ function getOpenLots(mysqli $link): array
 /**
  * Функция возвращает массив с лотами по id
  * @param $link mysqli Ресурс соединения
- * @param $lotId int ID лота
+ * @param string $lotId int ID лота
  * @return array Массив с лотами из базы данных
  */
-function getLogById(mysqli $link, int $lotId): array
+function getLogById(mysqli $link, string $lotId): array
 {
     $lotId = intval($lotId);
-    $sql = "SELECT l.id, l.title, description, l.price, l.image as url_image, l.end_date, MAX(b.price) as max_price,
+    $sql = "SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, MAX(b.price) as max_price,
        MIN(b.price) as min_price, c.name FROM lots l
    JOIN categories c ON l.category_id = c.id
    LEFT JOIN bets b ON l.id = b.lot_id
     WHERE l.id =  {$lotId} ;";
-    $result = mysqli_query($link, $sql);
-    if ($result) {
-        return mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-    } else {
-        print("Error: Запрос не выполнен" . mysqli_connect_error());
-        exit();
-    }
+    $result = mysqli_query($link, $sql);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
+
 
 /**
  * Функция добавляет новый лот в бд.
@@ -142,7 +138,7 @@ function getLogById(mysqli $link, int $lotId): array
  * @return bool возвращает результат записи из бд
  */
 
-function addLot(mysqli $link, array $lotData, $userId): bool
+function addLot(mysqli $link, array $lotData, string $userId): bool
 {
     $lotData['end_date'] = date("Y-m-d H:i:s", strtotime($lotData['end_date']));
     $lotData['image'] = uploadFile($_FILES);
@@ -204,3 +200,46 @@ function getUserByEmail(mysqli $link, string $email): array|null
     $arrayFromDB = mysqli_fetch_all($res, MYSQLI_ASSOC);
     return $arrayFromDB[0] ?? null;
 }
+
+/**
+ * Функция делает полнотекстовый поиск по полям title, description с ограничением по количеству элементов
+ * @param mysqli $link
+ * @param string $search
+ * @param $lotsLimit
+ * @param $offset
+ * @return array возвращает массив с полученны результатом
+ */
+function getLotBySearch (mysqli $link, string $search, $lotsLimit, $offset ): array
+{
+    $sql = "SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, c.name
+            FROM lots l
+            JOIN categories c ON l.category_id = c.id
+            WHERE  MATCH(l.title, l.description) AGAINST(? IN BOOLEAN MODE) ORDER BY l.date_creation DESC LIMIT $lotsLimit OFFSET $offset ";
+
+        $stmt = dbGetPrepareStmt($link, $sql, [$search]);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+}
+
+/**
+ * Функция возвращает количество элементов из поискового запроса к БД
+ * @param mysqli $link
+ * @param string $search
+ * @return int
+ */
+function countLotsFromSearch (mysqli $link,  string $search): int
+{
+    $sql = "SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, c.name
+            FROM lots l
+            JOIN categories c ON l.category_id = c.id
+            WHERE  MATCH(l.title, l.description) AGAINST(? IN BOOLEAN MODE) ORDER BY l.date_creation DESC";
+
+    $stmt = dbGetPrepareStmt($link, $sql, [$search]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return  count(mysqli_fetch_all($result, MYSQLI_ASSOC));
+}
+
+

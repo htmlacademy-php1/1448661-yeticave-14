@@ -75,8 +75,13 @@ ALTER TABLE `lots`
   ADD CONSTRAINT `lots_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `lots_ibfk_3` FOREIGN KEY (`winner_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 -- --------------------------------------------------------
+-- Добаввление на таблицу lots полнотекстовый индекс на поля title и description:
 --
+CREATE FULLTEXT INDEX lotsFullTextSearch ON lots(title, description);
 
+-- --------------------------------------------------------
+
+--
 -- ЭКСПОРТ БАЗЫ ДАННЫХ
 --
 -- phpMyAdmin SQL Dump

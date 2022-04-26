@@ -126,3 +126,10 @@ function checkSessionsName(array $sessions): string
         return ' ';
     }
 }
+
+function getArray($array) {
+    foreach ($array as $value){
+        return $value;
+    }
+
+}

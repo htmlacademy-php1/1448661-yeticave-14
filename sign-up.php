@@ -34,7 +34,7 @@ $content = includeTemplate('sign-up.php', [
 $layoutContent = includeTemplate('layout.php', [
     'content' => $content,
     'categories' => $categories,
-    'title' => 'Вход'
+    'title' => 'Регистрация'
 ]);
 
 print($layoutContent);

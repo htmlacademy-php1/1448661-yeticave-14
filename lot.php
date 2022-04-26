@@ -27,7 +27,7 @@ if ($lots[0]['id']) {
     $layoutContent = includeTemplate('layout.php', [
         'content' => $content,
         'categories' => $categories,
-        'title' => 'Страница лота',
+        'title' => $lots[0]['title'],
     ]);
 
     print($layoutContent);

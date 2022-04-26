@@ -9,15 +9,13 @@
         <ul class="nav__list container">
             <?php foreach ($categories as $category) : ?>
                 <li class="nav__item">
-                    <a href="all-lots.html"><?= $category['name']; ?></a>
+                    <a href="/all-lots.php"><?= $category['name']; ?></a>
                 </li>
             <?php endforeach; ?>
         </ul>
     </nav>
     <section class="lot-item container">
-        <?php foreach ($lots
-
-        as $lot): ?>
+        <?php foreach ($lots as $lot): ?>
         <h2><?= $lot['title']; ?></h2>
         <div class="lot-item__content">
             <div class="lot-item__left">
