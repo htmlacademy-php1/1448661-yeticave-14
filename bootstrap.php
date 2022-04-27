@@ -10,6 +10,7 @@ require_once __DIR__ . "/functions/response.php";
 require_once __DIR__ . "/functions/validateAddLotForm.php";
 require_once __DIR__ . "/functions/validateLoginForm.php";
 require_once __DIR__ . "/functions/validateSignUpForm.php";
+require_once __DIR__ . "/functions/validateBetsForm.php";
 
 $config = require_once __DIR__ . '/config/config.php';
 $link = dbConnect($config);

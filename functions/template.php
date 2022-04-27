@@ -133,3 +133,16 @@ function getArray($array) {
     }
 
 }
+
+/**
+ * @param int $price
+ * @return string
+ */
+function pricePlaceholder(int $price): string
+{
+    $price = ceil($price);
+    if ($price > 1000) {
+        $price = number_format($price, 0, null, ' ');
+    }
+    return $price;
+}

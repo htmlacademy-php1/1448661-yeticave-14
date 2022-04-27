@@ -1,7 +1,8 @@
 <?php
 /**
- * @var array $lots
+ * @var array $lotData
  * @var array $categories
+ * @var array $getBets
  */
 ?>
 <main>
@@ -15,7 +16,7 @@
         </ul>
     </nav>
     <section class="lot-item container">
-        <?php foreach ($lots as $lot): ?>
+        <?php foreach ($lotData as $lot): ?>
         <h2><?= $lot['title']; ?></h2>
         <div class="lot-item__content">
             <div class="lot-item__left">
@@ -28,45 +29,46 @@
             <?php endforeach; ?>
             <?php if ($_SESSION['name'] ?? false)  : ?>
             <div class="lot-item__right ">
-                <?php foreach ($lots
-
-                               as $lot): ?>
+                <?php foreach ($lotData as $lot): ?>
                 <div class="lot-item__state">
                     <?php $time = getDtRange($lot['end_date'], 'now') ?>
                     <div class="lot-item__timer timer <?php if ($time[0] < 1): ?>timer--finishing<?php endif; ?> ">
                         <?= sprintf("%02d", $time[0]) . ':' . sprintf("%02d", $time[1]); ?>
                     </div>
                     <div class="lot-item__cost-state">
+	                    <?php $currentPrice = $lot['max_price'] ?? $lot['price'] ;?>
                         <div class="lot-item__rate">
                             <span class="lot-item__amount">Текущая цена</span>
-                            <span class="lot-item__cost"><?= checkPriceValue($lot['price']); ?></span>
+                            <span class="lot-item__cost"><?= getPriceFormat($currentPrice);?></span>
                         </div>
+                          <?php $minBet = $currentPrice + $lot['step_bet'];?>
                         <div class="lot-item__min-cost">
-                            Мин. ставка <span><?= checkPriceValue($lot['min_price']); ?></span>
+                            Мин. ставка <span><?= getPriceFormat($minBet); ?></span>
                         </div>
                     </div>
                     <?php endforeach; ?>
-
-                    <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">
-                        <p class="lot-item__form-item form__item form__item--invalid">
+	                <?php $classname = !empty($errors) ? "form__item--invalid" : "" ?>
+                    <form class="lot-item__form" action="" method="post" autocomplete="off">
+                        <p class="lot-item__form-item form__item <?= $classname ;?>">
                             <label for="cost">Ваша ставка</label>
-                            <input id="cost" type="text" name="cost" placeholder="12 000">
-                            <span class="form__error">Введите наименование лота</span>
+                            <input id="cost" type="text" name="price" placeholder="<?= pricePlaceholder($minBet) ;?>">
+                            <span class="form__error"><?= $errors['price'] ?? "" ;?></span>
                         </p>
                         <button type="submit" class="button">Сделать ставку</button>
                     </form>
                 </div>
                 <div class="history">
-                    <h3>История ставок (<span>10</span>)</h3>
+
+                    <h3>История ставок (<span><?= count($getBets);?></span>)</h3>
+                    <?php foreach ($getBets as $bet): ?>
                     <table class="history__list">
                         <tr class="history__item">
-                            <td class="history__name">Иван</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">5 минут назад</td>
+                            <td class="history__name"><?= $bet['name'] ;?></td>
+                            <td class="history__price"><?= $bet['price'] ;?></td>
+                            <td class="history__time"><?= $bet['date_creation'];?></td>
                         </tr>
-
                     </table>
-                </div>
+                    <?php endforeach; ?>
                 <?php endif; ?>
             </div>
         </div>

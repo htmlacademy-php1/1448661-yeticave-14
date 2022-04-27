@@ -83,7 +83,6 @@ function getCategories(mysqli $link): array
     } else {
         print("Error: Запрос не выполнен" . mysqli_connect_error());
         exit();
-
     }
 
 }
@@ -116,10 +115,10 @@ function getOpenLots(mysqli $link): array
  * @param string $lotId int ID лота
  * @return array Массив с лотами из базы данных
  */
-function getLogById(mysqli $link, string $lotId): array
+function getLotById(mysqli $link, string $lotId): array
 {
     $lotId = intval($lotId);
-    $sql = "SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, MAX(b.price) as max_price,
+    $sql = "SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, l.step_bet, MAX(b.price) as max_price,
        MIN(b.price) as min_price, c.name FROM lots l
    JOIN categories c ON l.category_id = c.id
    LEFT JOIN bets b ON l.id = b.lot_id
@@ -129,12 +128,11 @@ function getLogById(mysqli $link, string $lotId): array
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-
 /**
  * Функция добавляет новый лот в бд.
  * @param mysqli $link
  * @param array $lotData
- * @param $userId
+ * @param string $userId
  * @return bool возвращает результат записи из бд
  */
 
@@ -220,7 +218,6 @@ function getLotBySearch (mysqli $link, string $search, $lotsLimit, $offset ): ar
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
-
 }
 
 /**
@@ -242,4 +239,46 @@ function countLotsFromSearch (mysqli $link,  string $search): int
     return  count(mysqli_fetch_all($result, MYSQLI_ASSOC));
 }
 
+/**
+ * Функция добавляет ставку в бд
+ * @param mysqli $link
+ * @param array $formOfBets
+ * @param string $userId
+ * @param string $lotId
+ * @return bool
+ */
+function addBet(mysqli $link, array $formOfBets, string $userId, string $lotId): bool
+{
 
+    $formOfBets['user_id'] = $userId;
+    $formOfBets['lot_id'] = $lotId;
+
+    $sql = "INSERT INTO `bets` (`price`, `user_id`, `lot_id`) value (?, ?, ?)";
+
+    $stmt = dbGetPrepareStmt($link, $sql, $formOfBets);
+    return mysqli_stmt_execute($stmt);
+}
+
+/**
+ * Функция получает ставки лота по id
+ * @param mysqli $link
+ * @param string $lotId
+ * @return array|void
+ */
+
+function getBets (mysqli $link, string $lotId) {
+
+    $sql = "SELECT b.id, b.price, b.user_id, b.lot_id, DATE_FORMAT(b.date_creation, '%d.%m.%y %H:%i' ) as date_creation, users.name  FROM bets b
+JOIN users on b.user_id = users.id
+WHERE b.lot_id = {$lotId}";
+    $result = mysqli_query($link, $sql);
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    } else {
+        print("Error: Запрос не выполнен" . mysqli_connect_error());
+        exit();
+
+    }
+
+}
