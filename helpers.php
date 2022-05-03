@@ -5,7 +5,7 @@
  * @param array $val
  * @return void
  */
-function myPrint (array $val)
+function myPrint ($val)
 {
     echo '<pre>';
     print_r($val);

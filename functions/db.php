@@ -430,3 +430,24 @@ JOIN users ON lots.user_id = users.id WHERE lots.winner_id IS NOT NULL AND lots.
     }
 }
 
+/**
+ * Функция получает победителей из бд
+ * @param $link
+ * @return array|false
+ */
+function getWinners($link): bool|array
+{
+    $sql = "SELECT lots.id as lot_id, lots.title, lots.winner_id, users.name, users.email FROM lots
+JOIN bets ON lots.winner_id = bets.user_id
+JOIN users ON bets.user_id = users.id
+WHERE winner_id IS NOT NULL GROUP BY (lots.id)";
+    $result = mysqli_query($link, $sql);
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }else {
+        print("Error: Запрос не выполнен" . mysqli_error($link));
+        exit();
+    }
+
+}
+

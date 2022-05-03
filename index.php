@@ -6,7 +6,7 @@
  * @var array $_SESSION
  */
 
-require_once __DIR__ . '/get-winner.php';
+require_once __DIR__ . '/getwinner.php';
 require_once __DIR__ . '/bootstrap.php';
 
 $categories = getCategories($link);

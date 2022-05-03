@@ -27,21 +27,33 @@ foreach ($lotList as $lot) {
 }
 if (!empty($lastBetsLots)){
     $result = writeWinnerToLot($link,$lastBetsLots['user_id'], $lastBetsLots['lot_id']);
+}
 
 
+$winners = getWinners($link);
+
+$message = new Email();
+$message->subject("Ваша ставка победила");
+$message->from("m.samorodov@internet.ru");
+
+
+foreach ($winners as $winner) {
+    $message->to($winner['email']);
+    $msgContent = includeTemplate('email.php', ['winner' => $winner]);
+    /*$message->setBody($msgContent, 'text/html');*/
+
+    /*$mailer = new Mailer($transport);
+    $result = $mailer->send($message);*/
 
 }
 
 
-// Формирование сообщения
-/*$message = new Email();
-$message->to("m.samorodov@internet.ru");
-$message->from("m.samorodov@internet.ru");
-$message->subject("тест");
-$message->text("Тест");
 
-// Отправка сообщения
-$mailer = new Mailer($transport);
-$mailer->send($message);*/
+
+
+
+
+
+
 
 
