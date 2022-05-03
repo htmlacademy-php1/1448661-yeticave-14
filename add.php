@@ -9,7 +9,7 @@ $errors = [];
 $lotData = [];
 
 $categories = getCategories($link);
-$categoryIds = getCategoriesId($categories);
+$categoryIds = getCategoriesIds($categories);
 $userId = getUserIdFromSession();
 
 if ($userId === null) {

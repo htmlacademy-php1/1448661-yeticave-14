@@ -2,7 +2,11 @@
 /**
  * @var array $lotData
  * @var array $categories
- * @var array $getBets
+ * @var array $lotBets
+ * @var  int $userId
+ * @var  int $minBet
+ * @var $endDate
+ * @var int $lotCreatorId
  */
 ?>
 <main>
@@ -10,7 +14,7 @@
         <ul class="nav__list container">
             <?php foreach ($categories as $category) : ?>
                 <li class="nav__item">
-                    <a href="/all-lots.php"><?= $category['name']; ?></a>
+                    <a href="/all-lots.php?categoryId=<?= $category['id']?>"><?= $category['name']; ?></a>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -47,25 +51,27 @@
                         </div>
                     </div>
                     <?php endforeach; ?>
-	                <?php $classname = !empty($errors) ? "form__item--invalid" : "" ?>
+                    <?php  $lastBetUserId = $lotBets[0]['user_id'] ?? "" ;?>
+                    <?php if(!hideBetForm($endDate, 'now', $userId, $lotCreatorId, $lastBetUserId)) :?>
+	                <?php $classname = !empty($errors) ? "form__item--invalid" : "";?>
                     <form class="lot-item__form" action="" method="post" autocomplete="off">
                         <p class="lot-item__form-item form__item <?= $classname ;?>">
                             <label for="cost">Ваша ставка</label>
-                            <input id="cost" type="text" name="price" placeholder="<?= pricePlaceholder($minBet) ;?>">
+                            <input id="cost" type="text" name="price" placeholder="<?= createPricePlaceholder($minBet) ;?>">
                             <span class="form__error"><?= $errors['price'] ?? "" ;?></span>
                         </p>
                         <button type="submit" class="button">Сделать ставку</button>
                     </form>
+                    <?php endif; ?>
                 </div>
                 <div class="history">
-
-                    <h3>История ставок (<span><?= count($getBets);?></span>)</h3>
-                    <?php foreach ($getBets as $bet): ?>
+                    <h3>История ставок (<span><?= count($lotBets);?></span>)</h3>
+                    <?php foreach ($lotBets as $bet): ?>
                     <table class="history__list">
                         <tr class="history__item">
                             <td class="history__name"><?= $bet['name'] ;?></td>
                             <td class="history__price"><?= $bet['price'] ;?></td>
-                            <td class="history__time"><?= $bet['date_creation'];?></td>
+                            <td class="history__time"><?= getPassedTimeBet($bet['date_creation'], 'now');?></td>
                         </tr>
                     </table>
                     <?php endforeach; ?>

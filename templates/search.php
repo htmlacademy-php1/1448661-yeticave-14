@@ -14,7 +14,7 @@
         <ul class="nav__list container">
             <?php foreach ($categories as $category): ?>
                 <li class="nav__item">
-                    <a href="../pages/all-lots.html"><?= $category['name']; ?></a>
+                    <a href="/all-lots.php?categoryId=<?= $category['id']?>"><?= $category['name']; ?></a>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -51,15 +51,28 @@
             </ul>
         </section>
         <?php if ($pageCount > 1) : ?>
+
             <ul class="pagination-list">
-                <li class="pagination-item pagination-item-prev"><a href="/search.php?page=1">Назад</a></li>
+
+                <li class="pagination-item pagination-item-prev">
+                    <a<?php if ($currentPage !== 1): ?> href="<?= buildPaginationLink('search.php', $currentPage - 1, $_GET);?>" <?php endif; ?>>
+                        Назад
+                    </a></li>
+
+
                 <?php foreach ($pages as $page) : ?>
-                    <li class="pagination-item <?php if ($page === $currentPage): ?>pagination__item--active<?php endif; ?>">
-                        <a href="/search.php?page=<?= $page; ?>"><?= $page; ?></a>
+
+                    <li class="pagination-item <?php if ($page == $currentPage ): ?> pagination-item-active <?php endif; ?>">
+                        <a href="<?= buildPaginationLink('search.php', $page, $_GET);?>"><?= $page; ?></a>
                     </li>
                 <?php endforeach; ?>
-                <li class="pagination-item pagination-item-next"><a
-                        href="/search.php?page=<?= $pageCount; ?>">Вперед</a></li>
+
+
+                <li class="pagination-item pagination-item-next">
+                    <a<?php if ($currentPage < $pageCount) : ?> href="<?= buildPaginationLink('search.php', $currentPage + 1, $_GET);?>"<?php endif; ?>>
+                        Вперед
+                    </a></li>
+
 
             </ul>
         <?php endif; ?>

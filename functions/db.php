@@ -68,6 +68,18 @@ function dbConnect($config)
 }
 
 /**
+ * Функция возвращает строку с данными для подключения почты
+ * @param $config
+ * @return string
+ */
+function getConnectData($config): string
+{
+
+    return "smtp://{$config['dsn'][ 'login']}:{$config['dsn'][ 'password']}{$config['dsn'][ 'serverAddress']}:{$config['dsn'][ 'port']}";
+
+}
+
+/**
  * Функция возвращает массив с категориями
  * @param $link mysqli Ресурс соединения
  * @return array Массив с категориями из базы данныз
@@ -112,20 +124,20 @@ function getOpenLots(mysqli $link): array
 /**
  * Функция возвращает массив с лотами по id
  * @param $link mysqli Ресурс соединения
- * @param string $lotId int ID лота
+ * @param int $lotId int ID лота
  * @return array Массив с лотами из базы данных
  */
-function getLotById(mysqli $link, string $lotId): array
+function getLotById(mysqli $link, int $lotId): array
 {
-    $lotId = intval($lotId);
-    $sql = "SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, l.step_bet, MAX(b.price) as max_price,
-       MIN(b.price) as min_price, c.name FROM lots l
+
+    $sql = "SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, l.step_bet, l.user_id, MAX(b.price) as max_price, c.name FROM lots l
    JOIN categories c ON l.category_id = c.id
    LEFT JOIN bets b ON l.id = b.lot_id
     WHERE l.id =  {$lotId} ;";
 
     $result = mysqli_query($link, $sql);
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
+
 }
 
 /**
@@ -153,13 +165,13 @@ function addLot(mysqli $link, array $lotData, string $userId): bool
  * Функция возвращает массив с id категориями.
  * @return  array Возвращает массив с id категориями
  */
-function getCategoriesId(array $arrayCategories): array
+function getCategoriesIds(array $arrayCategories): array
 {
-    $categoryId = [];
+    $categoryIds = [];
     foreach ($arrayCategories as $val) {
-        $categoryId[] = $val['id'];
+        $categoryIds[] = $val['id'];
     }
-    return $categoryId;
+    return $categoryIds;
 }
 
 
@@ -203,21 +215,23 @@ function getUserByEmail(mysqli $link, string $email): array|null
  * Функция делает полнотекстовый поиск по полям title, description с ограничением по количеству элементов
  * @param mysqli $link
  * @param string $search
- * @param $lotsLimit
- * @param $offset
+ * @param int $currentPage
+ * @param int $paginationLimit
  * @return array возвращает массив с полученны результатом
  */
-function getLotBySearch (mysqli $link, string $search, $lotsLimit, $offset ): array
+function getLotBySearch(mysqli $link, string $search, int $currentPage, int $paginationLimit ): array
 {
+
+    $offset = $paginationLimit * ($currentPage - 1);
     $sql = "SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, c.name
             FROM lots l
             JOIN categories c ON l.category_id = c.id
-            WHERE  MATCH(l.title, l.description) AGAINST(? IN BOOLEAN MODE) ORDER BY l.date_creation DESC LIMIT $lotsLimit OFFSET $offset ";
+            WHERE  MATCH(l.title, l.description) AGAINST(? IN BOOLEAN MODE) ORDER BY l.date_creation DESC LIMIT $paginationLimit OFFSET $offset ";
 
-        $stmt = dbGetPrepareStmt($link, $sql, [$search]);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $stmt = dbGetPrepareStmt($link, $sql, [$search]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 /**
@@ -226,17 +240,17 @@ function getLotBySearch (mysqli $link, string $search, $lotsLimit, $offset ): ar
  * @param string $search
  * @return int
  */
-function countLotsFromSearch (mysqli $link,  string $search): int
+function countLotsFromSearch(mysqli $link, string $search): int
 {
     $sql = "SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, c.name
             FROM lots l
             JOIN categories c ON l.category_id = c.id
-            WHERE  MATCH(l.title, l.description) AGAINST(? IN BOOLEAN MODE) ORDER BY l.date_creation DESC";
+            WHERE  MATCH(l.title, l.description) AGAINST(? IN BOOLEAN MODE)  ORDER BY l.date_creation DESC ";
 
     $stmt = dbGetPrepareStmt($link, $sql, [$search]);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
-    return  count(mysqli_fetch_all($result, MYSQLI_ASSOC));
+    return count(mysqli_fetch_all($result, MYSQLI_ASSOC));
 }
 
 /**
@@ -263,14 +277,15 @@ function addBet(mysqli $link, array $formOfBets, string $userId, string $lotId):
  * Функция получает ставки лота по id
  * @param mysqli $link
  * @param string $lotId
- * @return array|void
+ * @return array
  */
 
-function getBets (mysqli $link, string $lotId) {
+function getLotBets(mysqli $link, string $lotId): array
+{
 
-    $sql = "SELECT b.id, b.price, b.user_id, b.lot_id, DATE_FORMAT(b.date_creation, '%d.%m.%y %H:%i' ) as date_creation, users.name  FROM bets b
+    $sql = "SELECT b.id, b.price, b.user_id, b.lot_id, b.date_creation , users.name  FROM bets b
 JOIN users on b.user_id = users.id
-WHERE b.lot_id = {$lotId}";
+WHERE b.lot_id = {$lotId} ORDER BY b.date_creation DESC" ;
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -278,7 +293,140 @@ WHERE b.lot_id = {$lotId}";
     } else {
         print("Error: Запрос не выполнен" . mysqli_connect_error());
         exit();
-
     }
 
 }
+
+/**
+ * Функция получает ставки пользователя
+ * @param mysqli $link
+ * @param int $userId
+ * @return array
+ */
+function getUserBets(mysqli $link, int $userId): array
+{
+    $sql = "SELECT bets.date_creation, bets.price, contacts, users.id as user_id, lots.title, lots.image, winner_id, lots.id, lots.end_date, lots.user_id as lot_creator,  categories.name AS cat_name
+FROM bets
+JOIN lots ON bets.lot_id = lots.id
+JOIN categories ON lots.category_id = categories.id
+JOIN users ON bets.user_id = users.id
+WHERE bets.user_id = {$userId}  ORDER BY bets.date_creation DESC";
+    $result = mysqli_query($link, $sql);
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    }
+}
+
+/**
+ * Функция получает
+ * @param mysqli $link
+ * @param int $categoryId
+ * @param int $currentPage
+ * @param int $paginationLimit
+ * @return array
+ */
+function getLotByCategory(mysqli $link, int $categoryId, int $currentPage, int $paginationLimit): array
+{
+    $offset = $paginationLimit * ($currentPage - 1);
+    $sql = "SELECT lots.id, title, image, lots.price, lots.end_date, winner_id, lots.category_id, categories.name FROM lots
+    JOIN categories  ON lots.category_id = categories.id WHERE lots.category_id = {$categoryId} AND lots.end_date > NOW() GROUP BY (lots.id) ORDER BY lots.date_creation DESC LIMIT {$paginationLimit} OFFSET {$offset}";
+    $result = mysqli_query($link, $sql);
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }else {
+        print("Error: Запрос не выполнен" . mysqli_error($link));
+        exit();
+    }
+}
+
+/**
+ * Функция получает количество лотов по категории
+ * @param mysqli $link
+ * @param int $categoryId
+ * @return array|int
+ */
+function getQuantitiesLotsByCategory(mysqli $link, int $categoryId): array|int
+{
+    $sql = "SELECT lots.id, title, image, price, lots.end_date, winner_id, categories.name FROM lots
+JOIN categories  ON lots.category_id = categories.id WHERE lots.category_id = {$categoryId} AND lots.end_date > NOW() ORDER BY lots.date_creation DESC  ";
+    $result = mysqli_query($link, $sql);
+    if ($result) {
+        return count(mysqli_fetch_all($result, MYSQLI_ASSOC));
+    }else {
+        print("Error: Запрос не выполнен" . mysqli_error($link));
+        exit();
+    }
+}
+
+/**
+ * Функция возвращает список лотов без победителей, у которых дата истечения меньше или равна текущей дате.
+ * @param mysqli $link
+ * @return array
+ */
+function getLotWithoutWinner( mysqli $link): array
+{
+    $sql = "SELECT id as lot_id, title as lot_title, winner_id FROM lots WHERE winner_id IS NULL AND end_date <= CURRENT_DATE()";
+    $result = mysqli_query($link, $sql);
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }else {
+        print("Error: Запрос не выполнен" . mysqli_error($link));
+        exit();
+    }
+}
+
+/**
+ * Функция возвращает последнюю ставку лота
+ * @param mysqli $link
+ * @param int $lotId
+ * @return array|bool|null
+ */
+function getLastBetLot ( mysqli $link, int $lotId ): array|bool|null
+{
+    $sql = "SELECT users.id as user_id, users.name as user_name, bets.price as max_price, bets.lot_id as lot_id
+FROM bets
+JOIN users ON bets.user_id = users.id WHERE bets.lot_id = {$lotId} ORDER BY bets.price DESC LIMIT 1";
+    $result = mysqli_query($link, $sql);
+    if ($result) {
+        return mysqli_fetch_array($result, MYSQLI_ASSOC);
+    }else {
+        print("Error: Запрос не выполнен" . mysqli_error($link));
+        exit();
+    }
+}
+
+/**
+ * Функция записывает победителя в лот
+ * @param mysqli $link
+ * @param int $userId
+ * @param int $lotId
+ * @return mysqli_result|bool
+ */
+function  writeWinnerToLot(mysqli $link, int $userId, int $lotId): mysqli_result|bool
+{
+    $sql = "UPDATE lots SET winner_id = {$userId} WHERE id ={$lotId}";
+    return mysqli_query($link, $sql);
+
+}
+
+/**
+ * Функция получает контакты создателя лота
+ * @param mysqli $link
+ * @param int $lotId
+ * @return array|null
+ */
+function getLotCreatorContacts(mysqli $link, int $lotId): array|null
+{
+
+    $sql = "SELECT users.contacts FROM lots
+JOIN users ON lots.user_id = users.id WHERE lots.winner_id IS NOT NULL AND lots.id = {$lotId}";
+    $result = mysqli_query($link, $sql);
+    if ($result) {
+        return mysqli_fetch_array($result, MYSQLI_ASSOC);
+    }else {
+        print("Error: Запрос не выполнен" . mysqli_error($link));
+        exit();
+    }
+}
+

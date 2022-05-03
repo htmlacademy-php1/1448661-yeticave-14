@@ -1,6 +1,6 @@
 <?php
 /**
- * Функция валидирует форму и возвращает массив с ошибками
+ * Функция валидирует форму ставки и возвращает массив с ошибками
  * @param array $formOfBets
  * @param array $lotData
  * @return array
@@ -8,7 +8,8 @@
 function validateBetsForm(array $formOfBets, array $lotData): array
 {
     $errors = [
-        'price' => validateBet($formOfBets['price'], $lotData)
+        'price' => validateBet($formOfBets['price'], $lotData),
+
     ];
     return array_filter($errors);
 }

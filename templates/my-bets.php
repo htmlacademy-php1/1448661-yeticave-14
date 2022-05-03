@@ -1,165 +1,76 @@
 <?php
 /**
  * @var $categories
+ * @var  $userAllBets
+ * @var $link
  */
 ?>
 <main>
     <nav class="nav">
         <ul class="nav__list container">
             <?php foreach ($categories as $category): ?>
-            <li class="nav__item">
-                <a href="all-lots.html"><?= $category['name'];?></a>
-            </li>
+                <li class="nav__item">
+                    <a href="/all-lots.php?categoryId=<?= $category['id'] ?>"><?= $category['name']; ?></a>
+                </li>
             <?php endforeach; ?>
         </ul>
     </nav>
     <section class="rates container">
         <h2>Мои ставки</h2>
         <table class="rates__list">
-            <tr class="rates__item">
+            <?php foreach ($userAllBets as $bet): ?>
+            <tr class="rates__item <?php if ($bet['winner_id'] === $bet['user_id']): ?>rates__item--win<?php endif;?> ">
                 <td class="rates__info">
                     <div class="rates__img">
-                        <img src="../img/rate1.jpg" width="54" height="40" alt="Сноуборд">
+                        <img src="<?= $bet['image']; ?>" width="54" height="40" alt="<?= $bet['cat_name']; ?>">
                     </div>
-                    <h3 class="rates__title"><a href="lot.html">2014 Rossignol District Snowboard</a></h3>
+                    <?php if ($bet['winner_id'] === $bet['user_id']): ?>
+                        <div>
+                            <h3 class="rates__title"><a
+                                    href="<?= 'lot.php?id=' . $bet['id']; ?>"><?= $bet['title']; ?></a></h3>
+                            <?php $contact = getLotCreatorContacts($link, $bet['id']) ;?>
+                            <p><?= $contact['contacts']; ?></p>
+                        </div>
+                    <?php else: ?>
+                        <h3 class="rates__title"><a
+                                href="<?= 'lot.php?id=' . $bet['id']; ?>"><?= $bet['title']; ?></a></h3>
+                    <?php endif;?>
+
                 </td>
                 <td class="rates__category">
-                    Доски и лыжи
+                    <?= $bet['cat_name']; ?>
                 </td>
-                <td class="rates__timer">
-                    <div class="timer timer--finishing">07:13:34</div>
+
+                <?php $time = getDtRange($bet['end_date'], 'now') ?>
+                <td class="rates__timer ">
+                    <?php if ($bet['winner_id'] === $bet['user_id']): ?>
+                    <div class="timer timer--win">
+                        Ставка выиграла
+                    </div>
+                    <?php elseif ($bet['winner_id'] === null && $time[0] > 1 ): ?>
+                      <div class="timer">
+                        <?= sprintf("%02d", $time[0]) . ':' . sprintf("%02d", $time[1]); ?>
+                        </div>
+                    <?php elseif ($bet['winner_id'] === null && $time[0] < 1 ): ?>
+                        <div class="timer timer--finishing">
+                            <?= sprintf("%02d", $time[0]) . ':' . sprintf("%02d", $time[1]); ?>
+                        </div>
+
+                    <?php else: ?>
+                    <div class="timer timer--end">
+                        Торги окончены
+                    </div>
+                    <?php endif;?>
                 </td>
                 <td class="rates__price">
-                    10 999 р
+                    <?= $bet['price']; ?>
                 </td>
                 <td class="rates__time">
-                    5 минут назад
+                    <?= getPassedTimeBet($bet['date_creation'], 'now'); ?>
                 </td>
-            </tr>
-            <tr class="rates__item">
-                <td class="rates__info">
-                    <div class="rates__img">
-                        <img src="../img/rate2.jpg" width="54" height="40" alt="Сноуборд">
-                    </div>
-                    <h3 class="rates__title"><a href="lot.html">DC Ply Mens 2016/2017 Snowboard</a></h3>
-                </td>
-                <td class="rates__category">
-                    Доски и лыжи
-                </td>
-                <td class="rates__timer">
-                    <div class="timer timer--finishing">07:13:34</div>
-                </td>
-                <td class="rates__price">
-                    10 999 р
-                </td>
-                <td class="rates__time">
-                    20 минут назад
-                </td>
-            </tr>
-            <tr class="rates__item rates__item--win">
-                <td class="rates__info">
-                    <div class="rates__img">
-                        <img src="../img/rate3.jpg" width="54" height="40" alt="Крепления">
-                    </div>
-                    <div>
-                        <h3 class="rates__title"><a href="lot.html">Крепления Union Contact Pro 2015 года размер
-                                L/XL</a></h3>
-                        <p>Телефон +7 900 667-84-48, Скайп: Vlas92. Звонить с 14 до 20</p>
-                    </div>
-                </td>
-                <td class="rates__category">
-                    Крепления
-                </td>
-                <td class="rates__timer">
-                    <div class="timer timer--win">Ставка выиграла</div>
-                </td>
-                <td class="rates__price">
-                    10 999 р
-                </td>
-                <td class="rates__time">
-                    Час назад
-                </td>
-            </tr>
-            <tr class="rates__item">
-                <td class="rates__info">
-                    <div class="rates__img">
-                        <img src="../img/rate4.jpg" width="54" height="40" alt="Ботинки">
-                    </div>
-                    <h3 class="rates__title"><a href="lot.html">Ботинки для сноуборда DC Mutiny Charocal</a></h3>
-                </td>
-                <td class="rates__category">
-                    Ботинки
-                </td>
-                <td class="rates__timer">
-                    <div class="timer">07:13:34</div>
-                </td>
-                <td class="rates__price">
-                    10 999 р
-                </td>
-                <td class="rates__time">
-                    Вчера, в 21:30
-                </td>
-            </tr>
-            <tr class="rates__item rates__item--end">
-                <td class="rates__info">
-                    <div class="rates__img">
-                        <img src="../img/rate5.jpg" width="54" height="40" alt="Куртка">
-                    </div>
-                    <h3 class="rates__title"><a href="lot.html">Куртка для сноуборда DC Mutiny Charocal</a></h3>
-                </td>
-                <td class="rates__category">
-                    Одежда
-                </td>
-                <td class="rates__timer">
-                    <div class="timer timer--end">Торги окончены</div>
-                </td>
-                <td class="rates__price">
-                    10 999 р
-                </td>
-                <td class="rates__time">
-                    Вчера, в 21:30
-                </td>
-            </tr>
-            <tr class="rates__item rates__item--end">
-                <td class="rates__info">
-                    <div class="rates__img">
-                        <img src="../img/rate6.jpg" width="54" height="40" alt="Маска">
-                    </div>
-                    <h3 class="rates__title"><a href="lot.html">Маска Oakley Canopy</a></h3>
-                </td>
-                <td class="rates__category">
-                    Разное
-                </td>
-                <td class="rates__timer">
-                    <div class="timer timer--end">Торги окончены</div>
-                </td>
-                <td class="rates__price">
-                    10 999 р
-                </td>
-                <td class="rates__time">
-                    19.03.17 в 08:21
-                </td>
-            </tr>
-            <tr class="rates__item rates__item--end">
-                <td class="rates__info">
-                    <div class="rates__img">
-                        <img src="../img/rate7.jpg" width="54" height="40" alt="Сноуборд">
-                    </div>
-                    <h3 class="rates__title"><a href="lot.html">DC Ply Mens 2016/2017 Snowboard</a></h3>
-                </td>
-                <td class="rates__category">
-                    Доски и лыжи
-                </td>
-                <td class="rates__timer">
-                    <div class="timer timer--end">Торги окончены</div>
-                </td>
-                <td class="rates__price">
-                    10 999 р
-                </td>
-                <td class="rates__time">
-                    19.03.17 в 08:21
-                </td>
+                <?php endforeach; ?>
             </tr>
         </table>
+
     </section>
 </main>

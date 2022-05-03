@@ -87,19 +87,19 @@ function priceFormatting(int $price): string
 
 /**
  * Функция возвращает массив, где первый элемент — целое количество часов до даты, а второй — остаток в минутах.
- * @param string $endDate Дата завершения лота.
+ * @param string $date
  * @param string $currentDate Текущая дата.
  * @return array Массив часы и минуты до завершения лота.
  */
-function getDtRange(string $endDate, string $currentDate): array
+function getDtRange(string $date, string $currentDate): array
 {
-    $endDate = date_create($endDate);
+    $date = date_create($date);
     $currentDate = date_create($currentDate);
 
-    if ($endDate <= $currentDate) {
+    if ($date <= $currentDate) {
         return [0, 0];
     }
-    $diff = date_diff($currentDate, $endDate);
+    $diff = date_diff($currentDate, $date);
 
     $days = $diff->days;
     $hours = $diff->h;
@@ -127,18 +127,12 @@ function checkSessionsName(array $sessions): string
     }
 }
 
-function getArray($array) {
-    foreach ($array as $value){
-        return $value;
-    }
-
-}
-
 /**
+ * Функция возвращает отформатированную цену без знаку рубль
  * @param int $price
  * @return string
  */
-function pricePlaceholder(int $price): string
+function createPricePlaceholder(int $price): string
 {
     $price = ceil($price);
     if ($price > 1000) {
@@ -146,3 +140,84 @@ function pricePlaceholder(int $price): string
     }
     return $price;
 }
+
+/**
+ * Функция делает приведение типа текщей страницы к типу int и проверяет на целое число.
+ * @param string $currentPage
+ * @param array $categories
+ * @return void
+ */
+
+function checkCurrentPage(string $currentPage, array $categories)
+{
+    $currentPage = (int)$currentPage;
+    if ($currentPage <= 0) {
+        responseNotfound($categories);
+    }
+
+}
+
+/**
+ * Функция возвращает разницу во времени в человеческом формате (5 минут назад, час назад и т. д.).
+ * @param string $date
+ * @param string $currentDate
+ * @return string|null
+ */
+function getPassedTimeBet(string $date, string $currentDate): null|string
+{
+    $date = date_create($date);
+    $currentDate = date_create($currentDate);
+
+    $diff = date_diff($currentDate, $date);
+
+    $days = $diff->days;
+    $hours = $diff->h;
+    $minutes = $diff->i;
+
+    if ($days === 0 && $hours !== 0) {
+
+        return $hours . ' ' . getNounPluralForm($hours, 'час назад', 'часа назад', 'часов назад');
+    }
+
+    if ($hours === 0) {
+        return $minutes . ' ' . getNounPluralForm($minutes, 'минуту назад', 'минуты назад', 'минут назад');
+    }
+
+    if ($days === 1) {
+        return date_format($date, 'Вчера в H:i');
+    }
+
+    if ($days > 1) {
+
+        return date_format($date, 'd-m-y в H:i');
+    }
+
+    return null;
+}
+
+/**
+ * Функция скрывает форму ставки на странице лота
+ * @param string $endDate
+ * @param string $currentDate
+ * @param string $currentUserId
+ * @param string $lotCreatorId
+ * @param string $lastBetUserId
+ * @return bool
+ */
+
+function hideBetForm(string $endDate, string $currentDate, string  $currentUserId , string $lotCreatorId, string $lastBetUserId): bool
+{
+
+    $endDate = date_create($endDate);
+    $currentDate = date_create($currentDate);
+
+    if ($lotCreatorId === $currentUserId || $endDate <= $currentDate || $lastBetUserId === $currentUserId) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
+
