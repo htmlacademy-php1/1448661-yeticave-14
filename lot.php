@@ -16,6 +16,7 @@ if ($lotId === '') {
 
 $lotData = getLotById($link, $lotId);
 
+
 $userId = getUserIdFromSession();
 
 

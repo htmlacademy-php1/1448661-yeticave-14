@@ -40,10 +40,10 @@ $message->from("m.samorodov@internet.ru");
 foreach ($winners as $winner) {
     $message->to($winner['email']);
     $msgContent = includeTemplate('email.php', ['winner' => $winner]);
-    /*$message->setBody($msgContent, 'text/html');*/
+    $message->html($msgContent);
 
-    /*$mailer = new Mailer($transport);
-    $result = $mailer->send($message);*/
+    $mailer = new Mailer($transport);
+    $result = $mailer->send($message);
 
 }
 
