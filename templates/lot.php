@@ -20,37 +20,37 @@
         </ul>
     </nav>
     <section class="lot-item container">
-        <?php foreach ($lotData as $lot): ?>
-        <h2><?= $lot['title']; ?></h2>
+
+        <h2><?= $lotData['title']; ?></h2>
         <div class="lot-item__content">
             <div class="lot-item__left">
                 <div class="lot-item__image">
-                    <img src="<?= $lot['url_image']; ?>" width="730" height="548" alt="Сноуборд">
+                    <img src="<?= $lotData['url_image']; ?>" width="730" height="548" alt="Сноуборд">
                 </div>
-                <p class="lot-item__category">Категория: <span><?= $lot['name']; ?></span></p>
-                <p class="lot-item__description"><?= $lot['description']; ?></p>
+                <p class="lot-item__category">Категория: <span><?= $lotData['name']; ?></span></p>
+                <p class="lot-item__description"><?= $lotData['description']; ?></p>
             </div>
-            <?php endforeach; ?>
+
             <?php if ($_SESSION['name'] ?? false)  : ?>
             <div class="lot-item__right ">
-                <?php foreach ($lotData as $lot): ?>
+
                 <div class="lot-item__state">
-                    <?php $time = getDtRange($lot['end_date'], 'now') ?>
+                    <?php $time = getDtRange($lotData['end_date'], 'now') ?>
                     <div class="lot-item__timer timer <?php if ($time[0] < 1): ?>timer--finishing<?php endif; ?> ">
                         <?= sprintf("%02d", $time[0]) . ':' . sprintf("%02d", $time[1]); ?>
                     </div>
                     <div class="lot-item__cost-state">
-	                    <?php $currentPrice = $lot['max_price'] ?? $lot['price'] ;?>
+	                    <?php $currentPrice = $lot['max_price'] ?? $lotData['price'] ;?>
                         <div class="lot-item__rate">
                             <span class="lot-item__amount">Текущая цена</span>
                             <span class="lot-item__cost"><?= getPriceFormat($currentPrice);?></span>
                         </div>
-                          <?php $minBet = $currentPrice + $lot['step_bet'];?>
+                          <?php $minBet = $currentPrice + $lotData['step_bet'];?>
                         <div class="lot-item__min-cost">
                             Мин. ставка <span><?= getPriceFormat($minBet); ?></span>
                         </div>
                     </div>
-                    <?php endforeach; ?>
+
                     <?php  $lastBetUserId = $lotBets[0]['user_id'] ?? "" ;?>
                     <?php if(!hideBetForm($endDate, 'now', $userId, $lotCreatorId, $lastBetUserId)) :?>
 	                <?php $classname = !empty($errors) ? "form__item--invalid" : "";?>

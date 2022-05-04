@@ -16,9 +16,7 @@ if ($lotId === '') {
 
 $lotData = getLotById($link, $lotId);
 
-
 $userId = getUserIdFromSession();
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formOfBets = filter_input_array(INPUT_POST, ['price' => FILTER_DEFAULT], add_empty: true);
@@ -34,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $lotBets = getLotBets($link, $lotId);
 
 
-if ($lotData[0]['id']) {
-$endDate = $lotData[0]['end_date'];
-$lotCreatorId = $lotData[0]['user_id'];
+if (isset($lotData['id'])) {
+$endDate = $lotData['end_date'];
+$lotCreatorId = $lotData['user_id'];
 
     $content = includeTemplate('lot.php', [
         'categories' => $categories,
@@ -52,7 +50,7 @@ $lotCreatorId = $lotData[0]['user_id'];
     $layoutContent = includeTemplate('layout.php', [
         'content' => $content,
         'categories' => $categories,
-        'title' => $lotData[0]['title']
+        'title' => $lotData['title']
 
     ]);
 

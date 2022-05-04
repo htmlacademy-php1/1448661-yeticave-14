@@ -136,7 +136,7 @@ function getLotById(mysqli $link, int $lotId): array
     WHERE l.id =  {$lotId} ;";
 
     $result = mysqli_query($link, $sql);
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return mysqli_fetch_array($result, MYSQLI_ASSOC);
 
 }
 
