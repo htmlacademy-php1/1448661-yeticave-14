@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var array $lots
  * @var array $categories
@@ -18,7 +19,6 @@ if ($userId !== null) {
     $userAllBets = getUserBets($link, $userId);
 
     $contact = getLotCreatorContacts($link, 35);
-    myPrint( $contact);
 
     $content = includeTemplate('my-bets.php', [
         'categories' => $categories,
@@ -37,5 +37,3 @@ if ($userId !== null) {
 } else {
     responseForbidden($categories);
 }
-
-

@@ -36,8 +36,10 @@
                     <option>Выберите категорию</option>
                     <?php foreach ($categories as $category) : ?>
                         <option value="<?= $category['id']; ?>"
-                                <?php if ($category['id'] == getPostVal('category_id')): ?>selected<?php endif; ?>><?= $category['name'];
-                            ?></option>
+                                <?php if ($category['id'] == getPostVal('category_id')) :
+                                    ?>selected<?php
+                                endif; ?>><?= $category['name'];
+?></option>
                     <?php endforeach; ?>
                 </select>
                 <span class="form__error"><?= $errors['category_id'] ?? ""; ?></span>

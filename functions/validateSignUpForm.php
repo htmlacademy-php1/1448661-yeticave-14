@@ -22,7 +22,7 @@ function validateSignUpForm(mysqli $link, array $newAccountData): array
  * @param string $email
  * @return string|null
  */
-function validateEmail(mysqli $link, string $email): ?string
+function validateEmail(mysqli $link, string $email): string|null
 {
     if ($email === "") {
         return "Поле надо заполнить";

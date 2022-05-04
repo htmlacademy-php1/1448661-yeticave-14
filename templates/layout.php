@@ -37,7 +37,7 @@ require_once __DIR__ . './../bootstrap.php';
             <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
 
             <nav class="user-menu">
-                <?php if ($_SESSION['name'] ?? false)  : ?>
+                <?php if ($_SESSION['name'] ?? false) : ?>
                     <div class="user-menu__logged">
                         <p><?= $_SESSION['name']; ?></p>
                         <a class="user-menu__bets" href="/my-bets.php">Мои ставки</a>

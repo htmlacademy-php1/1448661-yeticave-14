@@ -31,16 +31,18 @@
                 <p class="lot-item__description"><?= $lotData['description']; ?></p>
             </div>
 
-            <?php if ($_SESSION['name'] ?? false)  : ?>
+            <?php if ($_SESSION['name'] ?? false) : ?>
             <div class="lot-item__right ">
 
                 <div class="lot-item__state">
                     <?php $time = getDtRange($lotData['end_date'], 'now') ?>
-                    <div class="lot-item__timer timer <?php if ($time[0] < 1): ?>timer--finishing<?php endif; ?> ">
+                    <div class="lot-item__timer timer <?php if ($time[0] < 1) :
+                        ?>timer--finishing<?php
+                                                      endif; ?> ">
                         <?= sprintf("%02d", $time[0]) . ':' . sprintf("%02d", $time[1]); ?>
                     </div>
                     <div class="lot-item__cost-state">
-	                    <?php $currentPrice = $lot['max_price'] ?? $lotData['price'] ;?>
+                        <?php $currentPrice = $lot['max_price'] ?? $lotData['price'] ;?>
                         <div class="lot-item__rate">
                             <span class="lot-item__amount">Текущая цена</span>
                             <span class="lot-item__cost"><?= getPriceFormat($currentPrice);?></span>
@@ -52,12 +54,13 @@
                     </div>
 
                     <?php  $lastBetUserId = $lotBets[0]['user_id'] ?? "" ;?>
-                    <?php if(!hideBetForm($endDate, 'now', $userId, $lotCreatorId, $lastBetUserId)) :?>
-	                <?php $classname = !empty($errors) ? "form__item--invalid" : "";?>
+                    <?php if (!hideBetForm($endDate, 'now', $userId, $lotCreatorId, $lastBetUserId)) :?>
+                        <?php $classname = !empty($errors) ? "form__item--invalid" : "";?>
                     <form class="lot-item__form" action="" method="post" autocomplete="off">
                         <p class="lot-item__form-item form__item <?= $classname ;?>">
                             <label for="cost">Ваша ставка</label>
-                            <input id="cost" type="text" name="price" placeholder="<?= createPricePlaceholder($minBet) ;?>">
+                            <input id="cost" type="text" name="price"
+                                   placeholder="<?= createPricePlaceholder($minBet) ;?>">
                             <span class="form__error"><?= $errors['price'] ?? "" ;?></span>
                         </p>
                         <button type="submit" class="button">Сделать ставку</button>
@@ -66,7 +69,7 @@
                 </div>
                 <div class="history">
                     <h3>История ставок (<span><?= count($lotBets);?></span>)</h3>
-                    <?php foreach ($lotBets as $bet): ?>
+                    <?php foreach ($lotBets as $bet) : ?>
                     <table class="history__list">
                         <tr class="history__item">
                             <td class="history__name"><?= $bet['name'] ;?></td>
@@ -75,7 +78,7 @@
                         </tr>
                     </table>
                     <?php endforeach; ?>
-                <?php endif; ?>
+            <?php endif; ?>
             </div>
         </div>
     </section>

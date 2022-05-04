@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var array $_SESSION
  * @var mysqli $link
@@ -23,10 +24,9 @@ $lotList = getLotWithoutWinner($link);
 
 foreach ($lotList as $lot) {
     $lastBetsLots = getLastBetLot($link, $lot['lot_id']);
-
 }
-if (!empty($lastBetsLots)){
-    $result = writeWinnerToLot($link,$lastBetsLots['user_id'], $lastBetsLots['lot_id']);
+if (!empty($lastBetsLots)) {
+    $result = writeWinnerToLot($link, $lastBetsLots['user_id'], $lastBetsLots['lot_id']);
 }
 
 
@@ -44,16 +44,4 @@ foreach ($winners as $winner) {
 
     $mailer = new Mailer($transport);
     $result = $mailer->send($message);
-
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var array $lots
  * @var array $categories
@@ -23,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = validateBetsForm($formOfBets, $lotData);
 
     if (!$errors) {
-        if (addBet($link, $formOfBets, $userId, $lotId)){
+        if (addBet($link, $formOfBets, $userId, $lotId)) {
             header("Location: lot.php?id=" . $lotId);
         }
     }
@@ -33,8 +34,8 @@ $lotBets = getLotBets($link, $lotId);
 
 
 if (isset($lotData['id'])) {
-$endDate = $lotData['end_date'];
-$lotCreatorId = $lotData['user_id'];
+    $endDate = $lotData['end_date'];
+    $lotCreatorId = $lotData['user_id'];
 
     $content = includeTemplate('lot.php', [
         'categories' => $categories,
@@ -58,5 +59,3 @@ $lotCreatorId = $lotData['user_id'];
 } else {
     responseNotfound($categories);
 }
-
-

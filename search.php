@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var array $searchResult
  * @var array $categories
@@ -11,7 +12,7 @@ require_once __DIR__ . '/bootstrap.php';
 $categories = getCategories($link);
 
 $currentPage = $_GET['page'] ?? 1;
-checkCurrentPage($currentPage, $categories );
+checkCurrentPage($currentPage, $categories);
 
 $paginationLimit = $config['pagination_limit'];
 
@@ -20,7 +21,7 @@ $userName = checkSessionsName($_SESSION);
 $search = filter_input(INPUT_GET, "search", FILTER_SANITIZE_SPECIAL_CHARS);
 $search = trim(strip_tags($search));
 
-$searchResult = getLotBySearch($link, $search, $currentPage, $paginationLimit );
+$searchResult = getLotBySearch($link, $search, $currentPage, $paginationLimit);
 
 $countLotsFromSearch = countLotsFromSearch($link, $search);
 
@@ -29,7 +30,6 @@ $pageCount = ceil($countLotsFromSearch / $paginationLimit);
 $pages = range(1, $pageCount);
 
 if (in_array($currentPage, $pages)) {
-
     if ($search === "" || empty($searchResult)) {
         $search = 'Ничего не найдено по вашему запросу';
     }
@@ -53,14 +53,6 @@ if (in_array($currentPage, $pages)) {
     ]);
 
     print($layoutContent);
-
 } else {
     responseNotfound($categories);
 }
-
-
-
-
-
-
-

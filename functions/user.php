@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Функция записывает в массив $_SESSION id и  name пользователя
  * @param $link
@@ -24,5 +25,4 @@ function getUserIdFromSession(): ?string
 {
 
     return $_SESSION['user_id'] ?? null;
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
  * @param $link mysqli Ресурс соединения
@@ -24,16 +25,15 @@ function dbGetPrepareStmt(mysqli $link, string $sql, array $data = [])
 
             if (is_int($value)) {
                 $type = 'i';
-            } else if (is_string($value)) {
+            } elseif (is_string($value)) {
                 $type = 's';
-            } else if (is_double($value)) {
+            } elseif (is_double($value)) {
                 $type = 'd';
             }
 
             if ($type) {
                 $types .= $type;
                 $stmt_data[] = $value;
-
             }
         }
 
@@ -57,8 +57,12 @@ function dbGetPrepareStmt(mysqli $link, string $sql, array $data = [])
  */
 function dbConnect($config)
 {
-    $link = mysqli_connect($config['db']['host'], $config['db']['user'],
-        $config['db']['password'], $config['db']['database']);
+    $link = mysqli_connect(
+        $config['db']['host'],
+        $config['db']['user'],
+        $config['db']['password'],
+        $config['db']['database']
+    );
     if (!$link) {
         print("Error:  нет подключения к базе данных MySQL " . mysqli_connect_error());
         exit();
@@ -76,7 +80,6 @@ function getConnectData($config): string
 {
 
     return "smtp://{$config['dsn'][ 'login']}:{$config['dsn'][ 'password']}{$config['dsn'][ 'serverAddress']}:{$config['dsn'][ 'port']}";
-
 }
 
 /**
@@ -91,12 +94,10 @@ function getCategories(mysqli $link): array
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
-
     } else {
-        print("Error: Запрос не выполнен" . mysqli_connect_error());
+        print("Error: Запрос не выполнен" . mysqli_error($link));
         exit();
     }
-
 }
 
 /**
@@ -113,12 +114,10 @@ function getOpenLots(mysqli $link): array
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
-
     } else {
-        print("Error: Запрос не выполнен" . mysqli_connect_error());
+        print("Error: Запрос не выполнен" . mysqli_error($link));
         exit();
     }
-
 }
 
 /**
@@ -137,15 +136,14 @@ function getLotById(mysqli $link, int $lotId): array
 
     $result = mysqli_query($link, $sql);
     return mysqli_fetch_array($result, MYSQLI_ASSOC);
-
 }
 
 /**
  * Функция добавляет новый лот в бд.
- * @param mysqli $link
- * @param array $lotData
- * @param string $userId
- * @return bool возвращает результат записи из бд
+ * @param mysqli $link Ресурс соединения
+ * @param array $lotData Данные получены из формы от пользователя
+ * @param string $userId id пользователя, который создает лот
+ * @return bool Возвращает результат записи из бд
  */
 
 function addLot(mysqli $link, array $lotData, string $userId): bool
@@ -158,11 +156,18 @@ function addLot(mysqli $link, array $lotData, string $userId): bool
              (?, ?, ?, ?, ?, ?, ?, ?)';
 
     $stmt = dbGetPrepareStmt($link, $sql, $lotData);
-    return mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_execute($stmt);
+    if ($result) {
+        return true;
+    } else {
+        print("Error: Запрос не выполнен" . mysqli_error($link));
+        exit();
+    }
 }
 
 /**
  * Функция возвращает массив с id категориями.
+ * @param array $arrayCategories массив с категориями и БД
  * @return  array Возвращает массив с id категориями
  */
 function getCategoriesIds(array $arrayCategories): array
@@ -177,8 +182,8 @@ function getCategoriesIds(array $arrayCategories): array
 
 /**
  * Функция записывает в БД нового пользователя
- * @param mysqli $link
- * @param array $newAccount
+ * @param mysqli $link Ресурс соеденения
+ * @param array $newAccount Данные пользователя полученные из формы регистрации
  * @return bool
  */
 function addUser(mysqli $link, array $newAccount): bool
@@ -189,13 +194,19 @@ function addUser(mysqli $link, array $newAccount): bool
     $sql = 'INSERT INTO `users`(`email`, `password`, `name`, `contacts`)
  VALUES(?,?,?,?)';
     $stmt = dbGetPrepareStmt($link, $sql, $newAccount);
-    return mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_execute($stmt);
+    if ($result) {
+        return true;
+    } else {
+        print("Error: Запрос не выполнен" . mysqli_error($link));
+        exit();
+    }
 }
 
 /**
  * Функция получает пользователя из БД по email
- * @param mysqli $link
- * @param string $email
+ * @param mysqli $link Ресурс соеденения
+ * @param string $email email пользователя
  * @return mixed|null
  */
 function getUserByEmail(mysqli $link, string $email): array|null
@@ -213,13 +224,13 @@ function getUserByEmail(mysqli $link, string $email): array|null
 
 /**
  * Функция делает полнотекстовый поиск по полям title, description с ограничением по количеству элементов
- * @param mysqli $link
- * @param string $search
- * @param int $currentPage
- * @param int $paginationLimit
+ * @param mysqli $link Ресурс соединения
+ * @param string $search Поисковый запрос
+ * @param int $currentPage Текщая страница для пагинации
+ * @param int $paginationLimit Ограничение по количеству элементов для запроса к БД
  * @return array возвращает массив с полученны результатом
  */
-function getLotBySearch(mysqli $link, string $search, int $currentPage, int $paginationLimit ): array
+function getLotBySearch(mysqli $link, string $search, int $currentPage, int $paginationLimit): array
 {
 
     $offset = $paginationLimit * ($currentPage - 1);
@@ -236,8 +247,8 @@ function getLotBySearch(mysqli $link, string $search, int $currentPage, int $pag
 
 /**
  * Функция возвращает количество элементов из поискового запроса к БД
- * @param mysqli $link
- * @param string $search
+ * @param mysqli $link Ресурс соединения
+ * @param string $search Поисковый запрос
  * @return int
  */
 function countLotsFromSearch(mysqli $link, string $search): int
@@ -255,10 +266,10 @@ function countLotsFromSearch(mysqli $link, string $search): int
 
 /**
  * Функция добавляет ставку в бд
- * @param mysqli $link
- * @param array $formOfBets
- * @param string $userId
- * @param string $lotId
+ * @param mysqli $link Ресурс соединения
+ * @param array $formOfBets  Данные полученные из формы ставок
+ * @param string $userId id текщего пользователя
+ * @param string $lotId id лота по которыму делается ставка
  * @return bool
  */
 function addBet(mysqli $link, array $formOfBets, string $userId, string $lotId): bool
@@ -275,7 +286,7 @@ function addBet(mysqli $link, array $formOfBets, string $userId, string $lotId):
 
 /**
  * Функция получает ставки лота по id
- * @param mysqli $link
+ * @param mysqli $link Ресурс соединения
  * @param string $lotId
  * @return array
  */
@@ -289,19 +300,17 @@ WHERE b.lot_id = {$lotId} ORDER BY b.date_creation DESC" ;
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
-
     } else {
-        print("Error: Запрос не выполнен" . mysqli_connect_error());
+        print("Error: Запрос не выполнен" . mysqli_error($link));
         exit();
     }
-
 }
 
 /**
  * Функция получает ставки пользователя
- * @param mysqli $link
- * @param int $userId
- * @return array
+ * @param mysqli $link Ресурс соединения
+ * @param int $userId id текущего пользователя
+ * @return array массив с данными, ставки пользователя
  */
 function getUserBets(mysqli $link, int $userId): array
 {
@@ -314,13 +323,15 @@ WHERE bets.user_id = {$userId}  ORDER BY bets.date_creation DESC";
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
-
+    } else {
+        print("Error: Запрос не выполнен" . mysqli_error($link));
+        exit();
     }
 }
 
 /**
  * Функция получает
- * @param mysqli $link
+ * @param mysqli $link Ресурс соединения
  * @param int $categoryId
  * @param int $currentPage
  * @param int $paginationLimit
@@ -334,7 +345,7 @@ function getLotByCategory(mysqli $link, int $categoryId, int $currentPage, int $
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
-    }else {
+    } else {
         print("Error: Запрос не выполнен" . mysqli_error($link));
         exit();
     }
@@ -342,7 +353,7 @@ function getLotByCategory(mysqli $link, int $categoryId, int $currentPage, int $
 
 /**
  * Функция получает количество лотов по категории
- * @param mysqli $link
+ * @param mysqli $link Ресурс соединения
  * @param int $categoryId
  * @return array|int
  */
@@ -353,7 +364,7 @@ JOIN categories  ON lots.category_id = categories.id WHERE lots.category_id = {$
     $result = mysqli_query($link, $sql);
     if ($result) {
         return count(mysqli_fetch_all($result, MYSQLI_ASSOC));
-    }else {
+    } else {
         print("Error: Запрос не выполнен" . mysqli_error($link));
         exit();
     }
@@ -361,16 +372,16 @@ JOIN categories  ON lots.category_id = categories.id WHERE lots.category_id = {$
 
 /**
  * Функция возвращает список лотов без победителей, у которых дата истечения меньше или равна текущей дате.
- * @param mysqli $link
+ * @param mysqli $link Ресурс соединения
  * @return array
  */
-function getLotWithoutWinner( mysqli $link): array
+function getLotWithoutWinner(mysqli $link): array
 {
     $sql = "SELECT id as lot_id, title as lot_title, winner_id FROM lots WHERE winner_id IS NULL AND end_date <= CURRENT_DATE()";
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
-    }else {
+    } else {
         print("Error: Запрос не выполнен" . mysqli_error($link));
         exit();
     }
@@ -378,11 +389,11 @@ function getLotWithoutWinner( mysqli $link): array
 
 /**
  * Функция возвращает последнюю ставку лота
- * @param mysqli $link
+ * @param mysqli $link Ресурс соединения
  * @param int $lotId
  * @return array|bool|null
  */
-function getLastBetLot ( mysqli $link, int $lotId ): array|bool|null
+function getLastBetLot(mysqli $link, int $lotId): array|bool|null
 {
     $sql = "SELECT users.id as user_id, users.name as user_name, bets.price as max_price, bets.lot_id as lot_id
 FROM bets
@@ -390,7 +401,7 @@ JOIN users ON bets.user_id = users.id WHERE bets.lot_id = {$lotId} ORDER BY bets
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_array($result, MYSQLI_ASSOC);
-    }else {
+    } else {
         print("Error: Запрос не выполнен" . mysqli_error($link));
         exit();
     }
@@ -398,21 +409,20 @@ JOIN users ON bets.user_id = users.id WHERE bets.lot_id = {$lotId} ORDER BY bets
 
 /**
  * Функция записывает победителя в лот
- * @param mysqli $link
+ * @param mysqli $link Ресурс соединения
  * @param int $userId
  * @param int $lotId
  * @return mysqli_result|bool
  */
-function  writeWinnerToLot(mysqli $link, int $userId, int $lotId): mysqli_result|bool
+function writeWinnerToLot(mysqli $link, int $userId, int $lotId): mysqli_result|bool
 {
     $sql = "UPDATE lots SET winner_id = {$userId} WHERE id ={$lotId}";
     return mysqli_query($link, $sql);
-
 }
 
 /**
  * Функция получает контакты создателя лота
- * @param mysqli $link
+ * @param mysqli $link Ресурс соединения
  * @param int $lotId
  * @return array|null
  */
@@ -424,7 +434,7 @@ JOIN users ON lots.user_id = users.id WHERE lots.winner_id IS NOT NULL AND lots.
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_array($result, MYSQLI_ASSOC);
-    }else {
+    } else {
         print("Error: Запрос не выполнен" . mysqli_error($link));
         exit();
     }
@@ -432,10 +442,10 @@ JOIN users ON lots.user_id = users.id WHERE lots.winner_id IS NOT NULL AND lots.
 
 /**
  * Функция получает победителей из бд
- * @param $link
- * @return array|false
+ * @param mysqli $link Ресурс соеденения
+ * @return array|false Моссив с победителями
  */
-function getWinners($link): bool|array
+function getWinners(mysqli $link): bool|array
 {
     $sql = "SELECT lots.id as lot_id, lots.title, lots.winner_id, users.name, users.email FROM lots
 JOIN bets ON lots.winner_id = bets.user_id
@@ -444,10 +454,8 @@ WHERE winner_id IS NOT NULL GROUP BY (lots.id)";
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
-    }else {
+    } else {
         print("Error: Запрос не выполнен" . mysqli_error($link));
         exit();
     }
-
 }
-

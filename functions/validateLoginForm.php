@@ -19,7 +19,7 @@ function validateLoginForm(mysqli $link, array $formLogin): array
  * @param $email
  * @return string|null
  */
-function validateEmailField($email): ?string
+function validateEmailField($email): string|null
 {
     if ($email === "") {
         return "Поле надо заполнить";
@@ -39,7 +39,7 @@ function validateEmailField($email): ?string
  * @param $password
  * @return string|null
  */
-function validatePassword($link, $email, $password): ?string
+function validatePassword($link, $email, $password): string|null
 {
     if ($password === "") {
         return "Поле надо заполнить";

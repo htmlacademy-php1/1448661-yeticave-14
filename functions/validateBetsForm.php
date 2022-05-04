@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Функция валидирует форму ставки и возвращает массив с ошибками
  * @param array $formOfBets
@@ -14,9 +15,14 @@ function validateBetsForm(array $formOfBets, array $lotData): array
     return array_filter($errors);
 }
 
+/**
+ * Валидация формы ставок
+ * @param $price
+ * @param array $lotData
+ * @return string|null
+ */
 
-
-function validateBet($price, array $lotData): ?string
+function validateBet($price, array $lotData): string|null
 {
 
     if ($price === '') {

@@ -15,8 +15,9 @@
     <nav class="nav">
         <ul class="nav__list container">
             <?php foreach ($categories as $category) :?>
-
-            <li class="nav__item <?php if($categoryId === $category['id']): ?>nav__item--current <?php endif;?>">
+            <li class="nav__item <?php if ($categoryId === $category['id']) :
+                ?>nav__item--current <?php
+                                 endif;?>">
                 <a href="/all-lots.php?categoryId=<?= $category['id']?>"><?= $category['name']; ?></a>
             </li>
             <?php endforeach ;?>
@@ -25,7 +26,7 @@
     <div class="container">
         <section class="lots">
             <?php foreach ($categories as $category) :?>
-                <?php if($categoryId === $category['id']): ?>
+                <?php if ($categoryId === $category['id']) : ?>
                 <h2>Все лоты в категории <span><?= '«' . $category['name'] . '»';?></span></h2>
                 <?php endif;?>
             <?php endforeach ;?>
@@ -45,14 +46,16 @@
 
                                 <div class="lot__rate">
                                         <?php $lotBets = getLotBets($link, $lot['id']) ;?>
-                                    <span class="lot__amount"><?= count($lotBets) === 0  ? 'Стартовая цена':
+                                    <span class="lot__amount"><?= count($lotBets) === 0  ? 'Стартовая цена' :
                                             count($lotBets) . ' ' . getNounPluralForm(count($lotBets), 'ставка', 'ставки', 'ставок') ;?></span>
                                     <span
                                         class="lot__cost"><?= getPriceFormat($lot['price']);?></span>
                                 </div>
                                 <?php $time = getDtRange($lot['end_date'], 'now') ?>
                                 <div
-                                    class="lot__timer timer <?php if ($time[0] < 1): ?>timer--finishing<?php endif; ?> ">
+                                    class="lot__timer timer <?php if ($time[0] < 1) :
+                                        ?>timer--finishing<?php
+                                                            endif; ?> ">
                                     <?= sprintf("%02d", $time[0]) . ':' . sprintf("%02d", $time[1]); ?>
                                 </div>
                             </div>
@@ -62,25 +65,29 @@
             </ul>
         </section>
         <?php if ($pageCount > 1) : ?>
-
             <ul class="pagination-list">
 
                 <li class="pagination-item pagination-item-prev">
-                    <a<?php if ($currentPage !== 1): ?> href="<?= buildPaginationLink('all-lots.php', $currentPage - 1, $_GET);?>" <?php endif; ?>>
+                    <a<?php if ($currentPage !== 1) :
+                        ?> href="<?= buildPaginationLink('all-lots.php', $currentPage - 1, $_GET);?>" <?php
+                      endif; ?>>
                         Назад
                     </a></li>
 
 
                 <?php foreach ($pages as $page) : ?>
-
-                    <li class="pagination-item <?php if ($page == $currentPage ): ?> pagination-item-active <?php endif; ?>">
+                    <li class="pagination-item <?php if ($page == $currentPage) :
+                        ?> pagination-item-active <?php
+                                               endif; ?>">
                         <a href="<?= buildPaginationLink('all-lots.php', $page, $_GET);?>"><?= $page; ?></a>
                     </li>
                 <?php endforeach; ?>
 
 
                 <li class="pagination-item pagination-item-next">
-                    <a<?php if ($currentPage < $pageCount) : ?> href="<?= buildPaginationLink('all-lots.php', $currentPage + 1, $_GET);?>"<?php endif; ?>>
+                    <a<?php if ($currentPage < $pageCount) :
+                        ?> href="<?= buildPaginationLink('all-lots.php', $currentPage + 1, $_GET);?>"<?php
+                      endif; ?>>
                         Вперед
                     </a></li>
 

@@ -1,4 +1,12 @@
 <?php
+
+/**
+ * Функция делает ссылку для погинации
+ * @param string $scriptName
+ * @param int $pageNumber
+ * @param array $requestData
+ * @return string ссылка
+ */
 function buildPaginationLink(string $scriptName, int $pageNumber, array $requestData): string
 {
     $link = "/$scriptName";
@@ -12,5 +20,4 @@ function buildPaginationLink(string $scriptName, int $pageNumber, array $request
         $params[] = "$key=$val";
     }
     return $link . "?" . implode("&", $params);
-
 }

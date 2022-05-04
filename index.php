@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var array $lots
  * @var array $categories
@@ -23,5 +24,3 @@ $layoutContent = includeTemplate('layout.php', [
 ]);
 
 print($layoutContent);
-
-
