@@ -19,17 +19,19 @@ $transport = Transport::fromDsn($dsn);
 
 $errorsWinnerScript = [];
 $userName = checkSessionsName($_SESSION);
-
+//получаю все лоты без победителей, дата истечения которых меньше или равна текущей дате.
 $lotList = getLotWithoutWinner($link);
 
 foreach ($lotList as $lot) {
+    //получаю для каждого лота последнюю ставку.
     $lastBetsLots = getLastBetLot($link, $lot['lot_id']);
 }
 if (!empty($lastBetsLots)) {
+    //Записываю в лот победителя автора последней ставки
     $result = writeWinnerToLot($link, $lastBetsLots['user_id'], $lastBetsLots['lot_id']);
 }
 
-
+//данные со всеми победителями
 $winners = getWinners($link);
 
 $message = new Email();
