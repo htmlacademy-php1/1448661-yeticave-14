@@ -19,7 +19,7 @@ function responseNotfound(array $categories)
 }
 
 /**
- * Функция собирает страницк с 403 ошибкой
+ * Функция собирает страницу с 403 ошибкой
  * @param array $categories
  * @return void
  */

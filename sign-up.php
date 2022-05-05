@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var array $categories
  * @var mysqli $link
@@ -7,7 +8,7 @@
 
 require_once __DIR__ . '/bootstrap.php';
 $newAccountData = [];
-$errors =[];
+$errors = [];
 $categories = getCategories($link);
 $userName = checkSessionsName($_SESSION);
 
@@ -18,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'name' => FILTER_DEFAULT, 'contacts' => FILTER_DEFAULT
     ], add_empty: true);
 
-    $errors = validateSignUpForm ($link ,$newAccountData);
+    $errors = validateSignUpForm($link, $newAccountData);
     if (!$errors) {
         addUser($link, $newAccountData);
         header("Location: /login.php");
@@ -34,7 +35,7 @@ $content = includeTemplate('sign-up.php', [
 $layoutContent = includeTemplate('layout.php', [
     'content' => $content,
     'categories' => $categories,
-    'title' => 'Вход'
+    'title' => 'Регистрация'
 ]);
 
 print($layoutContent);

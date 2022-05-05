@@ -26,7 +26,7 @@ function isDateValid(string $date): bool
  * @param  $price
  * @return string|null
  */
-function checkPriceValue($price): ?string
+function getPriceFormat($price): ?string
 {
     if (isset($price)) {
         return priceFormatting($price);

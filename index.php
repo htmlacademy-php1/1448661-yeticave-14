@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var array $lots
  * @var array $categories
@@ -6,7 +7,7 @@
  * @var array $_SESSION
  */
 
-
+require_once __DIR__ . '/getwinner.php';
 require_once __DIR__ . '/bootstrap.php';
 
 $categories = getCategories($link);
@@ -19,9 +20,7 @@ $layoutContent = includeTemplate('layout.php', [
     'content' => $content,
     'userName' => $userName,
     'categories' => $categories,
-    'title' => 'Главная страница'
+    'title' => 'Главная'
 ]);
 
 print($layoutContent);
-
-

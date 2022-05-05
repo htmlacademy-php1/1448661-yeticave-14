@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var array $categories
  * @var mysqli $link
@@ -9,7 +10,7 @@ $errors = [];
 $lotData = [];
 
 $categories = getCategories($link);
-$categoryIds = getCategoriesId($categories);
+$categoryIds = getCategoriesIds($categories);
 $userId = getUserIdFromSession();
 
 if ($userId === null) {
@@ -17,7 +18,6 @@ if ($userId === null) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $lotData = filter_input_array(INPUT_POST, [
         'title' => FILTER_DEFAULT,
         'category_id' => FILTER_DEFAULT,
@@ -30,13 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $errors = validateAddLotForm($lotData, $categoryIds);
 
-   if (!$errors) {
-      if (addLot($link, $lotData, $userId)){
-          $lotId = mysqli_insert_id($link);
-           header("Location: lot.php?id=" . $lotId);
-       }
-   }
-
+    if (!$errors) {
+        if (addLot($link, $lotData, $userId)) {
+            $lotId = mysqli_insert_id($link);
+            header("Location: lot.php?id=" . $lotId);
+        }
+    }
 }
 $content = includeTemplate('add.php', [
     'categories' => $categories,
@@ -50,4 +49,3 @@ $layoutContent = includeTemplate('layout.php', [
     'title' => 'Добавление лота'
 ]);
 print($layoutContent);
-

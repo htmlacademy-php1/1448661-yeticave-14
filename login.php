@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var array $categories
  * @var mysqli $link
@@ -43,4 +44,3 @@ $layoutContent = includeTemplate('layout.php', [
 ]);
 
 print($layoutContent);
-

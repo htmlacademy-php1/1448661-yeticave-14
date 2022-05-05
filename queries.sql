@@ -54,4 +54,7 @@ INSERT INTO `bets` (`price`, `user_id`, `lot_id`)
    UPDATE `lots` SET `title` = 'Маска Oakley Canopy Super Sun' WHERE id = 6;
 
 -- получить список ставок для лота по его идентификатору с сортировкой по дате.
-   SELECT * FROM `bets` WHERE lot_id = 3 ORDER BY date_creation
+   SELECT * FROM `bets` WHERE lot_id = 3 ORDER BY date_creation;
+
+-- Добаввление на таблицу lots полнотекстовый индекс на поля title и description:
+   CREATE FULLTEXT INDEX lotsFullTextSearch ON lots(title, description);

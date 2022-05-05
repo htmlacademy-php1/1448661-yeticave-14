@@ -13,7 +13,9 @@
         <ul class="promo__list">
             <?php foreach ($categories as $category) : ?>
                 <li class="promo__item promo__item--<?= $category['character_code']; ?>">
-                    <a class="promo__link" href="pages/all-lots.html"><?= htmlspecialchars($category['name']); ?></a>
+                    <a class="promo__link" href="/all-lots.php?categoryId=<?= $category['id']?>">
+                        <?= htmlspecialchars($category['name']); ?>
+                    </a>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -30,8 +32,9 @@
                     </div>
                     <div class="lot__info">
                         <span class="lot__category"><?= htmlspecialchars($lot['name']); ?></span>
-                        <h3 class="lot__title"><a class="text-link"
-                                                  href="lot.php?id=<?= $lot['id']; ?> "><?= htmlspecialchars($lot['title']); ?></a>
+                        <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?= $lot['id']; ?> ">
+                                <?= htmlspecialchars($lot['title']); ?>
+                            </a>
                         </h3>
                         <div class="lot__state">
                             <div class="lot__rate">
@@ -39,7 +42,9 @@
                                 <span class="lot__cost"><?= priceFormatting(htmlspecialchars($lot['price'])); ?></span>
                             </div>
                             <?php $time = getDtRange($lot['end_date'], 'now') ?>
-                            <div class="lot__timer timer <?php if ($time[0] < 1): ?>timer--finishing<?php endif; ?> ">
+                            <div class="lot__timer timer <?php if ($time[0] < 1) :
+                                ?>timer--finishing<?php
+                                                         endif; ?> ">
                                 <?= sprintf("%02d", $time[0]) . ':' . sprintf("%02d", $time[1]); ?>
                             </div>
                         </div>
