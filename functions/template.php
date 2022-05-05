@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Подключает шаблон, передает туда данные и возвращает итоговый HTML контент
  * @param string $name Путь к файлу шаблона относительно папки templates
@@ -154,7 +155,6 @@ function checkCurrentPage(string $currentPage, array $categories)
     if ($currentPage <= 0) {
         responseNotfound($categories);
     }
-
 }
 
 /**
@@ -175,7 +175,6 @@ function getPassedTimeBet(string $date, string $currentDate): null|string
     $minutes = $diff->i;
 
     if ($days === 0 && $hours !== 0) {
-
         return $hours . ' ' . getNounPluralForm($hours, 'час назад', 'часа назад', 'часов назад');
     }
 
@@ -188,7 +187,6 @@ function getPassedTimeBet(string $date, string $currentDate): null|string
     }
 
     if ($days > 1) {
-
         return date_format($date, 'd-m-y в H:i');
     }
 
@@ -205,7 +203,7 @@ function getPassedTimeBet(string $date, string $currentDate): null|string
  * @return bool
  */
 
-function hideBetForm(string $endDate, string $currentDate, string  $currentUserId , string $lotCreatorId, string $lastBetUserId): bool
+function hideBetForm(string $endDate, string $currentDate, string $currentUserId, string $lotCreatorId, string $lastBetUserId): bool
 {
 
     $endDate = date_create($endDate);
@@ -217,7 +215,3 @@ function hideBetForm(string $endDate, string $currentDate, string  $currentUserI
         return false;
     }
 }
-
-
-
-
