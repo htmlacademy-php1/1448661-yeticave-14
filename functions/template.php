@@ -203,8 +203,13 @@ function getPassedTimeBet(string $date, string $currentDate): null|string
  * @return bool
  */
 
-function hideBetForm(string $endDate, string $currentDate, string $currentUserId, string $lotCreatorId, string $lastBetUserId): bool
-{
+function hideBetForm(
+    string $endDate,
+    string $currentDate,
+    string $currentUserId,
+    string $lotCreatorId,
+    string $lastBetUserId
+): bool {
 
     $endDate = date_create($endDate);
     $currentDate = date_create($currentDate);

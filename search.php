@@ -29,10 +29,12 @@ $countLotsFromSearch = countLotsFromSearch($link, $search);
 $pageCount = ceil($countLotsFromSearch / $paginationLimit);
 $pages = range(1, $pageCount);
 
-if (in_array($currentPage, $pages)) {
-    if ($search === "" || empty($searchResult)) {
-        $search = 'Ничего не найдено по вашему запросу';
-    }
+if (!in_array($currentPage, $pages)) {
+    responseNotfound($categories);
+}
+if ($search === "" || empty($searchResult)) {
+    $search = 'Ничего не найдено по вашему запросу';
+}
 
     $currentCount = $searchResult;
 
@@ -53,6 +55,3 @@ if (in_array($currentPage, $pages)) {
     ]);
 
     print($layoutContent);
-} else {
-    responseNotfound($categories);
-}

@@ -7,8 +7,8 @@
  * @var array $_SESSION
  */
 
-require_once __DIR__ . '/getwinner.php';
 require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/getwinner.php';
 
 $categories = getCategories($link);
 $userName = checkSessionsName($_SESSION);
