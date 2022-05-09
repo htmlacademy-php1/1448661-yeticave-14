@@ -14,26 +14,28 @@ require_once __DIR__ . '/bootstrap.php';
 $dsn = getConnectData($config);
 $transport = Transport::fromDsn($dsn);
 
-
-
-
 $errorsWinnerScript = [];
-$userName = checkSessionsName($_SESSION);
-//получаю все лоты без победителей, дата истечения которых меньше или равна текущей дате.
-$lotList = getLotWithoutWinner($link);
 
-foreach ($lotList as $lot) {
-    //получаю для каждого лота последнюю ставку.
-    $lastBetsLots = getLastBetLot($link, $lot['lot_id']);
+
+$lots = getLotsWithoutWinner($link);
+
+$lastBetsLots = [];
+foreach ($lots as $lot) {
+    $lastBetsLots[] = getLastBetLot($link, $lot['lot_id']);
 }
-if (!empty($lastBetsLots)) {
-    //Записываю в лот победителя автора последней ставки
-    $result = writeWinnerToLot($link, $lastBetsLots['user_id'], $lastBetsLots['lot_id']);
+$lastBetsLots = array_filter($lastBetsLots);
+
+
+foreach ($lastBetsLots as $lastBetLot) {
+    writeWinnerToLot($link, $lastBetLot['user_id'], $lastBetLot['lot_id']);
 }
 
-//данные со всеми победителями
-$winners = getWinners($link);
+$userIds = array_column($lastBetsLots, 'user_id');
 
+
+$winners = $lastBetsLots;
+
+$mailer = new Mailer($transport);
 $message = new Email();
 $message->subject("Ваша ставка победила");
 $message->from("m.samorodov@internet.ru");
@@ -43,7 +45,11 @@ foreach ($winners as $winner) {
     $message->to($winner['email']);
     $msgContent = includeTemplate('email.php', ['winner' => $winner]);
     $message->html($msgContent);
-
-    $mailer = new Mailer($transport);
-    $result = $mailer->send($message);
+    try {
+        $mailer->send($message);
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    } catch (\Symfony\Component\Mailer\Exception\TransportExceptionInterface $e) {
+        echo $e->getMessage();
+    }
 }

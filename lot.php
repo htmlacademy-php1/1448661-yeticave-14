@@ -33,29 +33,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $lotBets = getLotBets($link, $lotId);
 
 
-if (isset($lotData['id'])) {
-    $endDate = $lotData['end_date'];
-    $lotCreatorId = $lotData['user_id'];
-
-    $content = includeTemplate('lot.php', [
-        'categories' => $categories,
-        'lotData' => $lotData,
-        'errors' => $errors,
-        'lotBets' => $lotBets,
-        'userId' => $userId,
-        'endDate' => $endDate,
-        'lotId' => $lotId,
-        'lotCreatorId' => $lotCreatorId
-    ]);
-
-    $layoutContent = includeTemplate('layout.php', [
-        'content' => $content,
-        'categories' => $categories,
-        'title' => $lotData['title']
-
-    ]);
-
-    print($layoutContent);
-} else {
+if (!isset($lotData['id'])) {
     responseNotfound($categories);
 }
+
+$endDate = $lotData['end_date'];
+$lotCreatorId = $lotData['user_id'];
+
+$content = includeTemplate('lot.php', [
+    'categories' => $categories,
+    'lotData' => $lotData,
+    'errors' => $errors,
+    'lotBets' => $lotBets,
+    'userId' => $userId,
+    'endDate' => $endDate,
+    'lotId' => $lotId,
+    'lotCreatorId' => $lotCreatorId
+]);
+
+$layoutContent = includeTemplate('layout.php', [
+    'content' => $content,
+    'categories' => $categories,
+    'title' => $lotData['title']
+
+]);
+
+print($layoutContent);

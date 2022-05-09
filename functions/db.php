@@ -78,7 +78,6 @@ function dbConnect($config)
  */
 function getConnectData($config): string
 {
-
     return "smtp://{$config['dsn'][ 'login']}:{$config['dsn'][ 'password']}{$config['dsn'][ 'serverAddress']}:{$config['dsn'][ 'port']}";
 }
 
@@ -89,7 +88,6 @@ function getConnectData($config): string
  */
 function getCategories(mysqli $link): array
 {
-
     $sql = 'SELECT `id`, `name`, `character_code`  FROM `categories`';
     $result = mysqli_query($link, $sql);
     if ($result) {
@@ -107,7 +105,6 @@ function getCategories(mysqli $link): array
  */
 function getOpenLots(mysqli $link): array
 {
-
     $sql = 'SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, MAX(b.price), c.name FROM lots l
    JOIN categories c ON l.category_id = c.id
    LEFT JOIN bets b ON l.id = b.lot_id WHERE l.end_date > NOW() GROUP BY (l.id)  ORDER BY l.date_creation DESC LIMIT 6 OFFSET 0 ';
@@ -128,7 +125,6 @@ function getOpenLots(mysqli $link): array
  */
 function getLotById(mysqli $link, int $lotId): array
 {
-
     $sql = "SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, l.step_bet, l.user_id, MAX(b.price) as max_price, c.name FROM lots l
    JOIN categories c ON l.category_id = c.id
    LEFT JOIN bets b ON l.id = b.lot_id
@@ -188,7 +184,6 @@ function getCategoriesIds(array $arrayCategories): array
  */
 function addUser(mysqli $link, array $newAccount): bool
 {
-
     $newAccount['password'] = password_hash($newAccount['password'], PASSWORD_DEFAULT);
 
     $sql = 'INSERT INTO `users`(`email`, `password`, `name`, `contacts`)
@@ -211,7 +206,6 @@ function addUser(mysqli $link, array $newAccount): bool
  */
 function getUserByEmail(mysqli $link, string $email): array|null
 {
-
     $sql = "SELECT `id`, `name`, `password`, `email` FROM `users` WHERE email= ?";
 
     $stmt = mysqli_prepare($link, $sql);
@@ -232,7 +226,6 @@ function getUserByEmail(mysqli $link, string $email): array|null
  */
 function getLotBySearch(mysqli $link, string $search, int $currentPage, int $paginationLimit): array
 {
-
     $offset = $paginationLimit * ($currentPage - 1);
     $sql = "SELECT l.id, l.title, l.description, l.price, l.image as url_image, l.end_date, c.name
             FROM lots l
@@ -267,14 +260,13 @@ function countLotsFromSearch(mysqli $link, string $search): int
 /**
  * Функция добавляет ставку в бд
  * @param mysqli $link Ресурс соединения
- * @param array $formOfBets  Данные полученные из формы ставок
+ * @param array $formOfBets Данные полученные из формы ставок
  * @param string $userId id текщего пользователя
  * @param string $lotId id лота по которыму делается ставка
  * @return bool
  */
 function addBet(mysqli $link, array $formOfBets, string $userId, string $lotId): bool
 {
-
     $formOfBets['user_id'] = $userId;
     $formOfBets['lot_id'] = $lotId;
 
@@ -293,10 +285,9 @@ function addBet(mysqli $link, array $formOfBets, string $userId, string $lotId):
 
 function getLotBets(mysqli $link, string $lotId): array
 {
-
     $sql = "SELECT b.id, b.price, b.user_id, b.lot_id, b.date_creation , users.name  FROM bets b
 JOIN users on b.user_id = users.id
-WHERE b.lot_id = {$lotId} ORDER BY b.date_creation DESC" ;
+WHERE b.lot_id = {$lotId} ORDER BY b.date_creation DESC";
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -375,16 +366,16 @@ JOIN categories  ON lots.category_id = categories.id WHERE lots.category_id = {$
  * @param mysqli $link Ресурс соединения
  * @return array
  */
-function getLotWithoutWinner(mysqli $link): array
+function getLotsWithoutWinner(mysqli $link): array
 {
-    $sql = "SELECT id as lot_id, title as lot_title, winner_id FROM lots WHERE winner_id IS NULL AND end_date <= CURRENT_DATE()";
+    $sql = "SELECT id as lot_id, title as lot_title, winner_id FROM lots
+            WHERE winner_id IS NULL AND end_date <= CURRENT_DATE()";
     $result = mysqli_query($link, $sql);
-    if ($result) {
-        return mysqli_fetch_all($result, MYSQLI_ASSOC);
-    } else {
+    if (!$result) {
         print("Error: Запрос не выполнен" . mysqli_error($link));
         exit();
     }
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 /**
@@ -395,14 +386,17 @@ function getLotWithoutWinner(mysqli $link): array
  */
 function getLastBetLot(mysqli $link, int $lotId): array|bool|null
 {
-    $sql = "SELECT users.id as user_id, users.name as user_name, bets.price as max_price, bets.lot_id as lot_id
-FROM bets
-JOIN users ON bets.user_id = users.id WHERE bets.lot_id = {$lotId} ORDER BY bets.price DESC LIMIT 1";
+    $sql = "SELECT users.id as user_id, users.name as user_name, users.email,
+       bets.price as max_price, bets.lot_id as lot_id, lots.title
+            FROM bets
+            JOIN lots ON bets.lot_id = lots.id
+            JOIN users ON bets.user_id = users.id WHERE bets.lot_id = {$lotId} ORDER BY bets.price DESC LIMIT 1";
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_array($result, MYSQLI_ASSOC);
     } else {
         print("Error: Запрос не выполнен" . mysqli_error($link));
+        print $sql;
         exit();
     }
 }
@@ -428,32 +422,11 @@ function writeWinnerToLot(mysqli $link, int $userId, int $lotId): mysqli_result|
  */
 function getLotCreatorContacts(mysqli $link, int $lotId): array|null
 {
-
     $sql = "SELECT users.contacts FROM lots
 JOIN users ON lots.user_id = users.id WHERE lots.winner_id IS NOT NULL AND lots.id = {$lotId}";
     $result = mysqli_query($link, $sql);
     if ($result) {
         return mysqli_fetch_array($result, MYSQLI_ASSOC);
-    } else {
-        print("Error: Запрос не выполнен" . mysqli_error($link));
-        exit();
-    }
-}
-
-/**
- * Функция получает победителей из бд
- * @param mysqli $link Ресурс соеденения
- * @return array|false Моссив с победителями
- */
-function getWinners(mysqli $link): bool|array
-{
-    $sql = "SELECT lots.id as lot_id, lots.title, lots.winner_id, users.name, users.email FROM lots
-JOIN bets ON lots.winner_id = bets.user_id
-JOIN users ON bets.user_id = users.id
-WHERE winner_id IS NOT NULL GROUP BY (lots.id)";
-    $result = mysqli_query($link, $sql);
-    if ($result) {
-        return mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
         print("Error: Запрос не выполнен" . mysqli_error($link));
         exit();

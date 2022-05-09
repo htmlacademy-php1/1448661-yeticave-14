@@ -15,25 +15,24 @@ $categories = getCategories($link);
 $userId = getUserIdFromSession();
 
 
-if ($userId !== null) {
-    $userAllBets = getUserBets($link, $userId);
-
-    $contact = getLotCreatorContacts($link, 35);
-
-    $content = includeTemplate('my-bets.php', [
-        'categories' => $categories,
-        'userAllBets' => $userAllBets,
-        'link' => $link
-    ]);
-
-    $layoutContent = includeTemplate('layout.php', [
-        'content' => $content,
-        'userName' => $userName,
-        'categories' => $categories,
-        'title' => 'Мои ставки'
-    ]);
-
-    print($layoutContent);
-} else {
+if ($userId === null) {
     responseForbidden($categories);
 }
+$userAllBets = getUserBets($link, $userId);
+
+$contact = getLotCreatorContacts($link, 35);
+
+$content = includeTemplate('my-bets.php', [
+    'categories' => $categories,
+    'userAllBets' => $userAllBets,
+    'link' => $link
+]);
+
+$layoutContent = includeTemplate('layout.php', [
+    'content' => $content,
+    'userName' => $userName,
+    'categories' => $categories,
+    'title' => 'Мои ставки'
+]);
+
+print($layoutContent);
