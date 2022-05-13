@@ -21,19 +21,6 @@ function isDateValid(string $date): bool
     return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
 }
 
-/**
- * Функция возвращает отформатированную цену и пустую строку если переменная переданная в атрибут не имеент значения
- * @param  $price
- * @return string|null
- */
-function getPriceFormat($price): ?string
-{
-    if (isset($price)) {
-        return priceFormatting($price);
-    } else {
-        return "";
-    }
-}
 
 /**
  * Функция получает значений из POST-запроса для сохранения введённых значений в полях формы.
@@ -56,5 +43,3 @@ function validateEmptyFields($value)
         return "Поле надо заполнить";
     }
 }
-
-

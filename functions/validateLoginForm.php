@@ -16,10 +16,10 @@ function validateLoginForm(mysqli $link, array $formLogin): array
 
 /**
  * Функция валидирует поле ввода email
- * @param $email
+ * @param string $email
  * @return string|null
  */
-function validateEmailField($email): string|null
+function validateEmailField(string $email): string|null
 {
     if ($email === "") {
         return "Поле надо заполнить";
@@ -34,12 +34,12 @@ function validateEmailField($email): string|null
 
 /**
  * Функция валидирует поле ввода password
- * @param $link
- * @param $email
- * @param $password
+ * @param mysqli $link
+ * @param string $email
+ * @param string $password
  * @return string|null
  */
-function validatePassword($link, $email, $password): string|null
+function validatePassword(mysqli $link, string $email, string $password): string|null
 {
     if ($password === "") {
         return "Поле надо заполнить";

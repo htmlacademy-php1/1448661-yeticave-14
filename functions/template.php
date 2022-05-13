@@ -129,7 +129,7 @@ function checkSessionsName(array $sessions): string
 }
 
 /**
- * Функция возвращает отформатированную цену без знаку рубль
+ * Функция возвращает отформатированную цену без знака рубль
  * @param int $price
  * @return string
  */
