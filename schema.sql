@@ -5,12 +5,12 @@
 CREATE DATABASE yeti
 DEFAULT CHARACTER SET utf8mb4
 DEFAULT COLLATE utf8mb4_unicode_ci;
+USE yeti;
 -- --------------------------------------------------------
 --
 -- Структура таблицы `categories`
 --
-  CREATE TABLE `yeti`.
-  `categories`
+  CREATE TABLE `categories`
   ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(255) NOT NULL ,
   `character_code` CHAR(255) NOT NULL ,
@@ -22,7 +22,7 @@ DEFAULT COLLATE utf8mb4_unicode_ci;
 --
 -- Структура таблицы `lots`
 --
-CREATE TABLE `yeti`. `lots`
+CREATE TABLE `lots`
  ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
  `date_creation` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ,
  `title` VARCHAR(255) NOT NULL ,
@@ -40,7 +40,7 @@ CREATE TABLE `yeti`. `lots`
 --
 -- Структура таблицы `bets`
 --
-CREATE TABLE `yeti`.`bets`
+CREATE TABLE `bets`
  ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `date_creation` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ,
   `price` INT UNSIGNED NOT NULL ,
@@ -53,7 +53,7 @@ CREATE TABLE `yeti`.`bets`
 --
 -- Структура таблицы `users`
 --
-CREATE TABLE `yeti`. `users`
+CREATE TABLE `users`
  ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
  `date_registration` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ,
  `email` VARCHAR(128) NOT NULL ,

@@ -42,14 +42,18 @@
                         <?= sprintf("%02d", $time[0]) . ':' . sprintf("%02d", $time[1]); ?>
                     </div>
                     <div class="lot-item__cost-state">
-                        <?php $currentPrice = $lot['max_price'] ?? $lotData['price'] ;?>
+
+                        <?php $currentPrice = $lotData['max_price'] ?? $lotData['price'] ;?>
+
                         <div class="lot-item__rate">
                             <span class="lot-item__amount">Текущая цена</span>
-                            <span class="lot-item__cost"><?= getPriceFormat($currentPrice);?></span>
+                            <span class="lot-item__cost"><?= priceFormatting($currentPrice);?></span>
                         </div>
+
                           <?php $minBet = $currentPrice + $lotData['step_bet'];?>
+
                         <div class="lot-item__min-cost">
-                            Мин. ставка <span><?= getPriceFormat($minBet); ?></span>
+                            Мин. ставка <span><?= priceFormatting($minBet); ?></span>
                         </div>
                     </div>
 

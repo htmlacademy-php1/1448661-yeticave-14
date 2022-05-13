@@ -35,8 +35,8 @@ function validateBet($price, array $lotData): string|null
     }
 
 
-    $currentPrice = $lotData[0]['max_price'] ?? $lotData[0]['price'];
-    $minBet = $currentPrice + $lotData[0]['step_bet'];
+    $currentPrice = $lotData['max_price'] ?? $lotData['price'];
+    $minBet = $currentPrice + $lotData['step_bet'];
     if ($price < $minBet) {
         return 'Значение должно быть больше или равно';
     }

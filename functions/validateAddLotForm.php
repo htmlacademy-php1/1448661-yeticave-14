@@ -27,7 +27,7 @@ function validateAddLotForm(array $lotData, array $categoryIds): array
  * @return string|null
  */
 
-function validateCategory(string $id, array $categoryIds): ?string
+function validateCategory(string $id, array $categoryIds): string|null
 {
     if (!in_array($id, $categoryIds)) {
         return "Указана несуществующая категория";
@@ -40,7 +40,7 @@ function validateCategory(string $id, array $categoryIds): ?string
  * @param string $value
  * @return string|null
  */
-function validateValue(string $value): ?string
+function validateValue(string $value): string|null
 {
     if ($value === "") {
         return "Поле надо заполнить";
@@ -57,7 +57,7 @@ function validateValue(string $value): ?string
  * @param string $endDate
  * @return string|null
  */
-function validateEndDate(string $endDate): ?string
+function validateEndDate(string $endDate): string|null
 {
     if ($endDate === "") {
         return "Поле надо заполнить";

@@ -25,7 +25,6 @@ $searchResult = getLotBySearch($link, $search, $currentPage, $paginationLimit);
 
 $countLotsFromSearch = countLotsFromSearch($link, $search);
 
-
 $pageCount = ceil($countLotsFromSearch / $paginationLimit);
 $pages = range(1, $pageCount);
 
@@ -37,7 +36,6 @@ if ($search === "" || empty($searchResult)) {
 }
 
     $currentCount = $searchResult;
-
     $content = includeTemplate('search.php', [
         'categories' => $categories,
         'search' => $search,

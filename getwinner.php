@@ -30,9 +30,6 @@ foreach ($lastBetsLots as $lastBetLot) {
     writeWinnerToLot($link, $lastBetLot['user_id'], $lastBetLot['lot_id']);
 }
 
-$userIds = array_column($lastBetsLots, 'user_id');
-
-
 $winners = $lastBetsLots;
 
 $mailer = new Mailer($transport);

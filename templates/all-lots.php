@@ -49,7 +49,7 @@
                                     <span class="lot__amount"><?= count($lotBets) === 0  ? 'Стартовая цена' :
                                             count($lotBets) . ' ' . getNounPluralForm(count($lotBets), 'ставка', 'ставки', 'ставок') ;?></span>
                                     <span
-                                        class="lot__cost"><?= getPriceFormat($lot['price']);?></span>
+                                        class="lot__cost"><?= priceFormatting($lot['price']);?></span>
                                 </div>
                                 <?php $time = getDtRange($lot['end_date'], 'now') ?>
                                 <div
