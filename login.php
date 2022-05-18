@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formLogin = filter_input_array(INPUT_POST, [
         'email' => FILTER_DEFAULT,
         'password' => FILTER_DEFAULT
-    ], add_empty: true);
+    ], true);
 
     $errors = validateLoginForm($link, $formLogin);
 

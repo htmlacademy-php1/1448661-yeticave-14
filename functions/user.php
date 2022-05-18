@@ -23,6 +23,5 @@ function login($link, $formLogin): bool
  */
 function getUserIdFromSession(): ?string
 {
-
     return $_SESSION['user_id'] ?? null;
 }

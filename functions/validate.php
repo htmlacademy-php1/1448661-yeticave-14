@@ -31,15 +31,3 @@ function getPostVal(mixed $val): ?string
 {
     return $_POST[$val] ?? "";
 }
-
-/**
- * Функция проверяет поля на заполение, возвращает текст с ошибкой, если поле не заполнено.
- * @param $value
- * @return string|void
- */
-function validateEmptyFields($value)
-{
-    if ($value === "") {
-        return "Поле надо заполнить";
-    }
-}

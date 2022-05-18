@@ -16,8 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newAccountData = filter_input_array(INPUT_POST, [
         'email' => FILTER_DEFAULT,
         'password' => FILTER_DEFAULT,
-        'name' => FILTER_DEFAULT, 'contacts' => FILTER_DEFAULT
-    ], add_empty: true);
+        'name' => FILTER_DEFAULT,
+        'contacts' => FILTER_DEFAULT
+    ], true);
 
     $errors = validateSignUpForm($link, $newAccountData);
     if (!$errors) {

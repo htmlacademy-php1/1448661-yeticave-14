@@ -39,7 +39,7 @@ require_once __DIR__ . './../bootstrap.php';
             <nav class="user-menu">
                 <?php if ($_SESSION['name'] ?? false) : ?>
                     <div class="user-menu__logged">
-                        <p><?= $_SESSION['name']; ?></p>
+                        <p><?= htmlspecialchars($_SESSION['name']); ?></p>
                         <a class="user-menu__bets" href="/my-bets.php">Мои ставки</a>
                         <a class="user-menu__logout" href="/logout.php">Выход</a>
                     </div>
@@ -67,7 +67,9 @@ require_once __DIR__ . './../bootstrap.php';
         <ul class="nav__list container">
             <?php foreach ($categories as $category) : ?>
                 <li class="nav__item">
-                    <a href="/all-lots.php?categoryId=<?= $category['id']?>"><?= $category['name']; ?></a>
+                    <a href="/all-lots.php?categoryId=<?= $category['id']?>">
+                        <?= htmlspecialchars($category['name']); ?>
+                    </a>
                 </li>
             <?php endforeach; ?>
         </ul>

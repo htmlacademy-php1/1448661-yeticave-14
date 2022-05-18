@@ -12,6 +12,7 @@ require_once __DIR__ . '/bootstrap.php';
 $categories = getCategories($link);
 
 $currentPage = $_GET['page'] ?? 1;
+$currentPage = intval($currentPage);
 checkCurrentPage($currentPage, $categories);
 
 $paginationLimit = $config['pagination_limit'];
@@ -26,6 +27,7 @@ $searchResult = getLotBySearch($link, $search, $currentPage, $paginationLimit);
 $countLotsFromSearch = countLotsFromSearch($link, $search);
 
 $pageCount = ceil($countLotsFromSearch / $paginationLimit);
+$pageCount = intval($pageCount);
 $pages = range(1, $pageCount);
 
 if (!in_array($currentPage, $pages)) {

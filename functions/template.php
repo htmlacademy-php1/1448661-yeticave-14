@@ -115,17 +115,16 @@ function getDtRange(string $date, string $currentDate): array
 }
 
 /**
- * Функция проверяет не пуст ли массив $_SESSION по ключу name;
- * @param array $sessions
- * @return string
+ * Функция проверяет не пуст ли массив $session по ключу name
+ * @param array $session
+ * @return string|null
  */
-function checkSessionsName(array $sessions): string
+function checkSessionsName(array $session): ?string
 {
-    if (!empty($_SESSION)) {
-        return $_SESSION['name'];
-    } else {
-        return ' ';
+    if (!empty($session)) {
+        return $session['name'];
     }
+    return null;
 }
 
 /**
@@ -210,7 +209,6 @@ function hideBetForm(
     string $lotCreatorId,
     string $lastBetUserId
 ): bool {
-
     $endDate = date_create($endDate);
     $currentDate = date_create($currentDate);
 

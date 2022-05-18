@@ -24,6 +24,9 @@ function validateBetsForm(array $formOfBets, array $lotData): array
 
 function validateBet($price, array $lotData): string|null
 {
+    if ($price > 15000000) {
+        return "Значение должно быть меньше 15 000 000";
+    }
 
     if ($price === '') {
         return 'Заполните поле';
