@@ -17,24 +17,24 @@ function validateBetsForm(array $formOfBets, array $lotData): array
 
 /**
  * Валидация формы ставок
- * @param $price
+ * @param string $price
  * @param array $lotData
  * @return string|null
  */
 
-function validateBet($price, array $lotData): string|null
+function validateBet(string $price, array $lotData): string|null
 {
-    if ($price > 15000000) {
-        return "Значение должно быть меньше 15 000 000";
-    }
-
     if ($price === '') {
         return 'Заполните поле';
     }
 
     $price = intval($price);
+
     if ($price <= 0) {
         return "Не корректно введено значение";
+    }
+    if ($price > 15000000) {
+        return "Значение должно быть меньше 15 000 000";
     }
 
 

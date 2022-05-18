@@ -14,7 +14,6 @@ $categoriesIds = getCategoriesIds($categories);
 $currentPage = $_GET['page'] ?? 1;
 $currentPage = intval($currentPage);
 
-
 checkCurrentPage($currentPage, $categories);
 
 $paginationLimit = $config['pagination_limit'];

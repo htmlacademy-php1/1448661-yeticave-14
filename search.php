@@ -37,21 +37,21 @@ if ($search === "" || empty($searchResult)) {
     $search = 'Ничего не найдено по вашему запросу';
 }
 
-    $currentCount = $searchResult;
-    $content = includeTemplate('search.php', [
-        'categories' => $categories,
-        'search' => $search,
-        'searchResult' => $searchResult,
-        'currentPage' => $currentPage,
-        'pageCount' => $pageCount,
-        'pages' => $pages
+$currentCount = $searchResult;
+$content = includeTemplate('search.php', [
+    'categories' => $categories,
+    'search' => $search,
+    'searchResult' => $searchResult,
+    'currentPage' => $currentPage,
+    'pageCount' => $pageCount,
+    'pages' => $pages
+]);
+
+$layoutContent = includeTemplate('layout.php', [
+    'content' => $content,
+    'userName' => $userName,
+    'categories' => $categories,
+    'title' => 'Результаты поиска'
     ]);
 
-    $layoutContent = includeTemplate('layout.php', [
-        'content' => $content,
-        'userName' => $userName,
-        'categories' => $categories,
-        'title' => 'Результаты поиска'
-    ]);
-
-    print($layoutContent);
+print($layoutContent);
