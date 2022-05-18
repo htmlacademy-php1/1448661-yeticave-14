@@ -9,6 +9,7 @@
   "require": {
     "ext-mysqli": "*",
     "ext-fileinfo": "*",
-        "symfony/mailer": "^6.0"
+        "symfony/mailer": "^6.0",
+        "friendsofphp/php-cs-fixer": "^3.8"
   }
 }

@@ -21,4 +21,3 @@ class GetDtRangeTest extends TestCase
         $this->assertEquals([168, 0], $result);
     }
 }
-

@@ -10,7 +10,9 @@
         <ul class="nav__list container">
             <?php foreach ($categories as $category) : ?>
                 <li class="nav__item">
-                    <a href="/all-lots.php?categoryId=<?= $category['id'] ?>"><?= $category['name']; ?></a>
+                    <a href="/all-lots.php?categoryId=<?= $category['id'] ?>">
+                        <?= htmlspecialchars($category['name']); ?>
+                    </a>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -19,31 +21,39 @@
         <h2>Мои ставки</h2>
         <table class="rates__list">
             <?php foreach ($userAllBets as $bet) : ?>
-            <tr class="rates__item <?php if ($bet['winner_id'] === $bet['user_id']) :
-                ?>rates__item--win<?php
-                                   endif;?> ">
+            <tr class="rates__item
+                <?php if ($bet['winner_id'] === $bet['user_id']) :
+                    ?>rates__item--win
+                <?php endif;?> ">
                 <td class="rates__info">
                     <div class="rates__img">
-                        <img src="<?= $bet['image']; ?>" width="54" height="40" alt="<?= $bet['cat_name']; ?>">
+                        <img src="<?= htmlspecialchars($bet['image']); ?>"
+                             width="54" height="40" alt="<?= $bet['cat_name']; ?>">
                     </div>
                     <?php if ($bet['winner_id'] === $bet['user_id']) : ?>
                         <div>
-                            <h3 class="rates__title"><a
-                                    href="<?= 'lot.php?id=' . $bet['id']; ?>"><?= $bet['title']; ?></a></h3>
+                            <h3 class="rates__title">
+                                <a href="<?= 'lot.php?id=' . $bet['id']; ?>">
+                                    <?= htmlspecialchars($bet['title']); ?>
+                                </a>
+                            </h3>
                             <?php $contact = getLotCreatorContacts($link, $bet['id']) ;?>
-                            <p><?= $contact['contacts']; ?></p>
+                            <p><?= htmlspecialchars($contact['contacts']); ?></p>
                         </div>
                     <?php else : ?>
-                        <h3 class="rates__title"><a
-                                href="<?= 'lot.php?id=' . $bet['id']; ?>"><?= $bet['title']; ?></a></h3>
+                        <h3 class="rates__title">
+                            <a href="<?= 'lot.php?id=' . $bet['id']; ?>">
+                                <?= htmlspecialchars($bet['title']); ?>
+                            </a>
+                        </h3>
                     <?php endif;?>
 
                 </td>
                 <td class="rates__category">
-                    <?= $bet['cat_name']; ?>
+                    <?= htmlspecialchars($bet['cat_name']); ?>
                 </td>
 
-                <?php $time = getDtRange($bet['end_date'], 'now') ?>
+                <?php $time = getDtRange(htmlspecialchars($bet['end_date']), 'now') ?>
                 <td class="rates__timer ">
                     <?php if ($bet['winner_id'] === $bet['user_id']) : ?>
                     <div class="timer timer--win">
@@ -65,10 +75,10 @@
                     <?php endif;?>
                 </td>
                 <td class="rates__price">
-                    <?= $bet['price']; ?>
+                    <?= htmlspecialchars($bet['price']); ?>
                 </td>
                 <td class="rates__time">
-                    <?= getPassedTimeBet($bet['date_creation'], 'now'); ?>
+                    <?= getPassedTimeBet(htmlspecialchars($bet['date_creation']), 'now'); ?>
                 </td>
             <?php endforeach; ?>
             </tr>

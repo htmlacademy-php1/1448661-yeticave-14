@@ -48,4 +48,5 @@ $layoutContent = includeTemplate('layout.php', [
     'categories' => $categories,
     'title' => 'Добавление лота'
 ]);
+
 print($layoutContent);

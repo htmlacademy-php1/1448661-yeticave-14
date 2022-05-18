@@ -12,6 +12,7 @@ require_once __DIR__ . '/bootstrap.php';
 $categories = getCategories($link);
 
 $currentPage = $_GET['page'] ?? 1;
+$currentPage = intval($currentPage);
 checkCurrentPage($currentPage, $categories);
 
 $paginationLimit = $config['pagination_limit'];
@@ -26,6 +27,7 @@ $searchResult = getLotBySearch($link, $search, $currentPage, $paginationLimit);
 $countLotsFromSearch = countLotsFromSearch($link, $search);
 
 $pageCount = ceil($countLotsFromSearch / $paginationLimit);
+$pageCount = intval($pageCount);
 $pages = range(1, $pageCount);
 
 if (!in_array($currentPage, $pages)) {
@@ -35,21 +37,21 @@ if ($search === "" || empty($searchResult)) {
     $search = 'Ничего не найдено по вашему запросу';
 }
 
-    $currentCount = $searchResult;
-    $content = includeTemplate('search.php', [
-        'categories' => $categories,
-        'search' => $search,
-        'searchResult' => $searchResult,
-        'currentPage' => $currentPage,
-        'pageCount' => $pageCount,
-        'pages' => $pages
+$currentCount = $searchResult;
+$content = includeTemplate('search.php', [
+    'categories' => $categories,
+    'search' => $search,
+    'searchResult' => $searchResult,
+    'currentPage' => $currentPage,
+    'pageCount' => $pageCount,
+    'pages' => $pages
+]);
+
+$layoutContent = includeTemplate('layout.php', [
+    'content' => $content,
+    'userName' => $userName,
+    'categories' => $categories,
+    'title' => 'Результаты поиска'
     ]);
 
-    $layoutContent = includeTemplate('layout.php', [
-        'content' => $content,
-        'userName' => $userName,
-        'categories' => $categories,
-        'title' => 'Результаты поиска'
-    ]);
-
-    print($layoutContent);
+print($layoutContent);

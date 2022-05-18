@@ -25,4 +25,3 @@ class BuildPaginationLinkTest extends TestCase
         $this->assertEquals('/search.php?search=test', $result);
     }
 }
-

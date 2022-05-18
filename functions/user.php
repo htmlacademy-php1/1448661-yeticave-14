@@ -2,11 +2,11 @@
 
 /**
  * Функция записывает в массив $_SESSION id и  name пользователя
- * @param $link
- * @param $formLogin
+ * @param mysqli $link
+ * @param array $formLogin
  * @return bool
  */
-function login($link, $formLogin): bool
+function login(mysqli $link, array $formLogin): bool
 {
     $user = getUserByEmail($link, $formLogin['email']);
     if ($user === null) {
@@ -23,6 +23,5 @@ function login($link, $formLogin): bool
  */
 function getUserIdFromSession(): ?string
 {
-
     return $_SESSION['user_id'] ?? null;
 }

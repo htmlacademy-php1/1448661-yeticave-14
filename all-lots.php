@@ -12,6 +12,8 @@ $categories = getCategories($link);
 $categoriesIds = getCategoriesIds($categories);
 
 $currentPage = $_GET['page'] ?? 1;
+$currentPage = intval($currentPage);
+
 checkCurrentPage($currentPage, $categories);
 
 $paginationLimit = $config['pagination_limit'];
@@ -27,6 +29,8 @@ $lots = getLotByCategory($link, $categoryId, $currentPage, $paginationLimit);
 
 $countLots = getQuantitiesLotsByCategory($link, $categoryId);
 $pageCount = ceil($countLots / $paginationLimit);
+$pageCount = intval($pageCount);
+
 $pages = range(1, $pageCount);
 
 if (!in_array($currentPage, $pages)) {

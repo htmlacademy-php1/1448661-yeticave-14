@@ -15,7 +15,9 @@
             <?php
             foreach ($categories as $category) : ?>
                 <li class="nav__item">
-                    <a href="/all-lots.php?categoryId=<?= $category['id'] ?>"><?= $category['name']; ?></a>
+                    <a href="/all-lots.php?categoryId=<?= $category['id'] ?>">
+                        <?= htmlspecialchars($category['name']); ?>
+                    </a>
                 </li>
                 <?php
             endforeach; ?>
@@ -23,7 +25,9 @@
     </nav>
     <div class="container">
         <section class="lots">
-            <h2>Результаты поиска по запросу «<span><?= $search; ?></span>»</h2>
+            <h2>
+                Результаты поиска по запросу «<span><?= $search; ?></span>»
+            </h2>
             <ul class="lots__list">
                 <?php
                 foreach ($searchResult as $lot) : ?>
@@ -44,7 +48,7 @@
                                     </span>
                                 </div>
                                 <?php
-                                $time = getDtRange($lot['end_date'], 'now') ?>
+                                $time = getDtRange(htmlspecialchars($lot['end_date']), 'now') ?>
                                 <div
                                     class="lot__timer timer <?php
                                     if ($time[0] < 1) :
@@ -75,7 +79,7 @@
                 <?php
                 foreach ($pages as $page) : ?>
                     <li class="pagination-item <?php
-                    if ($page == $currentPage) :
+                    if ($page === $currentPage) :
                         ?> pagination-item-active <?php
                     endif; ?>">
                         <a href="<?= buildPaginationLink('search.php', $page, $_GET); ?>"><?= $page; ?></a>

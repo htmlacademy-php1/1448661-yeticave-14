@@ -14,28 +14,29 @@
         <ul class="nav__list container">
             <?php foreach ($categories as $category) : ?>
                 <li class="nav__item">
-                    <a href="/all-lots.php?categoryId=<?= $category['id']?>"><?= $category['name']; ?></a>
+                    <a href="/all-lots.php?categoryId=<?= $category['id']?>"><?= htmlspecialchars($category['name']); ?>
+                    </a>
                 </li>
             <?php endforeach; ?>
         </ul>
     </nav>
     <section class="lot-item container">
 
-        <h2><?= $lotData['title']; ?></h2>
+        <h2><?= htmlspecialchars($lotData['title']); ?></h2>
         <div class="lot-item__content">
             <div class="lot-item__left">
                 <div class="lot-item__image">
-                    <img src="<?= $lotData['url_image']; ?>" width="730" height="548" alt="Сноуборд">
+                    <img src="<?= htmlspecialchars($lotData['url_image']); ?>" width="730" height="548" alt="Сноуборд">
                 </div>
-                <p class="lot-item__category">Категория: <span><?= $lotData['name']; ?></span></p>
-                <p class="lot-item__description"><?= $lotData['description']; ?></p>
+                <p class="lot-item__category">Категория: <span><?= htmlspecialchars($lotData['name']); ?></span></p>
+                <p class="lot-item__description"><?= htmlspecialchars($lotData['description']); ?></p>
             </div>
 
             <?php if ($_SESSION['name'] ?? false) : ?>
             <div class="lot-item__right ">
 
                 <div class="lot-item__state">
-                    <?php $time = getDtRange($lotData['end_date'], 'now') ?>
+                    <?php $time = getDtRange(htmlspecialchars($lotData['end_date']), 'now') ?>
                     <div class="lot-item__timer timer <?php if ($time[0] < 1) :
                         ?>timer--finishing<?php
                                                       endif; ?> ">
@@ -47,13 +48,13 @@
 
                         <div class="lot-item__rate">
                             <span class="lot-item__amount">Текущая цена</span>
-                            <span class="lot-item__cost"><?= priceFormatting($currentPrice);?></span>
+                            <span class="lot-item__cost"><?= priceFormatting(htmlspecialchars($currentPrice));?></span>
                         </div>
 
                           <?php $minBet = $currentPrice + $lotData['step_bet'];?>
 
                         <div class="lot-item__min-cost">
-                            Мин. ставка <span><?= priceFormatting($minBet); ?></span>
+                            Мин. ставка <span><?= priceFormatting(htmlspecialchars($minBet)); ?></span>
                         </div>
                     </div>
 
@@ -64,7 +65,7 @@
                         <p class="lot-item__form-item form__item <?= $classname ;?>">
                             <label for="cost">Ваша ставка</label>
                             <input id="cost" type="text" name="price"
-                                   placeholder="<?= createPricePlaceholder($minBet) ;?>">
+                                   placeholder="<?= createPricePlaceholder(htmlspecialchars($minBet)) ;?>">
                             <span class="form__error"><?= $errors['price'] ?? "" ;?></span>
                         </p>
                         <button type="submit" class="button">Сделать ставку</button>
@@ -76,9 +77,11 @@
                     <?php foreach ($lotBets as $bet) : ?>
                     <table class="history__list">
                         <tr class="history__item">
-                            <td class="history__name"><?= $bet['name'] ;?></td>
-                            <td class="history__price"><?= $bet['price'] ;?></td>
-                            <td class="history__time"><?= getPassedTimeBet($bet['date_creation'], 'now');?></td>
+                            <td class="history__name"><?= htmlspecialchars($bet['name']) ;?></td>
+                            <td class="history__price"><?= htmlspecialchars($bet['price']) ;?></td>
+                            <td class="history__time">
+                                <?= getPassedTimeBet(htmlspecialchars($bet['date_creation']), 'now');?>
+                            </td>
                         </tr>
                     </table>
                     <?php endforeach; ?>

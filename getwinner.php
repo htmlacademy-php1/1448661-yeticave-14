@@ -6,8 +6,8 @@
  * @var $config
  */
 
-use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Email;
 
 require_once __DIR__ . '/bootstrap.php';
